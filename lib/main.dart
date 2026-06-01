@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
-// import 'package:greengymapp/Pages/LandingPage1.dart';
-import 'package:greengymapp/Pages/profilePage.dart';
+import 'package:greengymapp/Pages/LandingPage1.dart';
+// import 'package:greengymapp/Pages/profilePage.dart'; Hanya testing saja
 
 void main() => runApp(
   DevicePreview(
@@ -24,7 +24,7 @@ class GreenGymApp extends StatelessWidget {
 
       debugShowCheckedModeBanner: false,
       theme: ThemeData(scaffoldBackgroundColor: const Color(0xFFE1DCD3)),
-      home: const Profile(),
+      home: const OnboardingScreen(),
     );
   }
 }
