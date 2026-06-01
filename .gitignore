@@ -43,3 +43,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+# ─── PENGAMANAN BACKEND EXPRESS & FIREBASE ───
+backend/node_modules/
+backend/.env
+backend/firebase-key.json

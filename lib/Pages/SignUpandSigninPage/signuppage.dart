@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'LandingPage3.dart';
+import '../LandingPages/LandingPage3.dart';
 
 // =========================================================================
 // 1. SIGN IN PAGE (Sesuai Desain Kanan di Screenshot 2026-05-31 214317.png)
@@ -93,9 +93,9 @@ class _SignInPageState extends State<SignInPage> {
                               "WELCOME BACK",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontFamily: 'Impact',
+                                fontFamily: 'BebasNeue',
                                 fontSize: 28,
-                                fontWeight: FontWeight.bold,
+
                                 color: Colors.white,
                                 letterSpacing: 1.0,
                               ),
@@ -105,6 +105,7 @@ class _SignInPageState extends State<SignInPage> {
                               "Log in to continue your urban fitness community.",
                               textAlign: TextAlign.center,
                               style: TextStyle(
+                                fontFamily : 'BebasNeue',
                                 color: Colors.white.withOpacity(0.7),
                                 fontSize: 13,
                               ),

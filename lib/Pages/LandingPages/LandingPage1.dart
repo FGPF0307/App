@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:greengymapp/Pages/LandingPages/LandingPage2.dart';
 
-class OnboardingScreen3 extends StatelessWidget {
-  const OnboardingScreen3({Key? key}) : super(key: key);
+class OnboardingScreen extends StatelessWidget {
+  const OnboardingScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    const Color crownYellow = Color(0xFFF5B82E); 
-    const Color domeWhite = Color(0xFFFFFFFF); 
+    const Color darkCharcoal = Color(0xFF1E241F); 
+    const Color domeWhite = Color(0xFFF9F9F9);    
     const Color creamBg = Color(0xFFE1DCD3); 
 
     return Scaffold(
@@ -19,9 +20,9 @@ class OnboardingScreen3 extends StatelessWidget {
                 width: 402,   
                 height: 874,  
                 child: Image.asset(
-                  'assets/images/landingPage3.jpeg', 
+                  'assets/images/landingPage1.jpg', 
                   fit: BoxFit.cover, 
-                  alignment: Alignment.center, 
+                  alignment: Alignment.centerLeft, 
                 ),
               ),
             ),
@@ -34,7 +35,7 @@ class OnboardingScreen3 extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 
-                //"TRAIN"
+                // Tulisan Train dan To
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -44,54 +45,38 @@ class OnboardingScreen3 extends StatelessWidget {
                         fontFamily: 'BebasNeue', 
                         fontSize: 84, 
                         height: 0.8, 
-                        color: Colors.white, 
+                        color: darkCharcoal,
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 12.0, left: 8.0), 
+                      padding: const EdgeInsets.only(top: 12.0, left: 6.0), 
                       child: const Text(
                         'TO',
                         style: TextStyle(
                           fontFamily: 'BebasNeue',
-                          fontSize: 36,
+                          fontSize: 40,
                           height: 1.0,
-                          color: Colors.white, 
+                          color: Colors.white,
                         ),
                       ),
                     ),
                   ],
                 ),
                 
-                // "STRONG"
-                const Text(
-                  'STRONG ,',
-                  style: TextStyle(
-                    fontFamily: 'BebasNeue',
-                    fontSize: 84,
-                    height: 0.85,
-                    color: Colors.white, 
-                  ),
-                ),
-
-                // "CLAIM" 
-                const Text(
-                  'CLAIM',
-                  style: TextStyle(
-                    fontFamily: 'BebasNeue',
-                    fontSize: 84,
-                    height: 0.85,
-                    color: crownYellow, 
-                  ),
-                ),
-
-                //"YOUR CROWN" 
-                const Text(
-                  'YOUR CROWN',
-                  style: TextStyle(
-                    fontFamily: 'BebasNeue',
-                    fontSize: 84,
-                    height: 0.85,
-                    color: crownYellow, 
+                // Tul;isan FIT dan YOUR CITY
+                RichText(
+                  text: const TextSpan(
+                    style: TextStyle(
+                      fontFamily: 'BebasNeue',
+                      fontSize: 72,
+                      height: 0.85,
+                      letterSpacing: 1.0,
+                    ),
+                    children: [
+                      TextSpan(text: 'FIT ', style: TextStyle(color: Colors.white)),
+                      TextSpan(text: 'YOUR ', style: TextStyle(color: darkCharcoal)),
+                      TextSpan(text: 'CITY', style: TextStyle(color: Colors.white)),
+                    ],
                   ),
                 ),
                 
@@ -105,44 +90,48 @@ class OnboardingScreen3 extends StatelessWidget {
               clipper: DomeClipper(), 
               child: Container(
                 width: double.infinity,
-                color: domeWhite, // Dikembalikan ke warna putih
-                padding: const EdgeInsets.fromLTRB(32, 64, 32, 40), 
+                color: domeWhite,
+                padding: const EdgeInsets.fromLTRB(32, 72, 32, 40), 
                 child: Column(
                   mainAxisSize: MainAxisSize.min, 
                   children: [
                     
                     const Text(
-                      'Every sweat counts. Earn\nXP from real-world check-\nins, level up your\nprofile, and claim your\ncrown as a Local Legend to\nunlock exclusive rewards\nat healthy local\nmerchants.',
+                      'Find every workout spot\nacross the city instantly.\nDiscover open parks,\npublic courts, and premium\ngyms. Check live crowd\ndensity, view available\nbooking slots, and keep\nyour city active.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontFamily: 'JetBrainsMono', 
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18, 
-                        color: Colors.black, 
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                        color: Colors.black,
                         height: 1.4, 
                       ),
                     ),
                     
                     const SizedBox(height: 32),
 
-                    //"GET STARTED" 
                     SizedBox(
                       width: double.infinity,
                       height: 56,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: crownYellow, 
+                          backgroundColor: const Color(0xFF191919), 
                           shape: const StadiumBorder(), 
                           elevation: 0,
                         ),
                         onPressed: () {
-                          // Navigasi ke mana
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const OnboardingScreen2(),
+                            ),
+                          );
                         },
                         child: const Text(
-                          'GET STARTED',
+                          'EXPLORE MORE',
                           style: TextStyle(
                             fontFamily: 'BebasNeue',
-                            fontSize: 32,
+                            fontSize: 26,
                             letterSpacing: 1.5,
                             color: Colors.white,
                           ),

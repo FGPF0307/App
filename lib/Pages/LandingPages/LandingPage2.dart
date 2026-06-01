@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:greengymapp/Pages/LandingPage3.dart';
+import 'package:greengymapp/Pages/LandingPages/LandingPage3.dart';
 class OnboardingScreen2 extends StatelessWidget {
   const OnboardingScreen2({Key? key}) : super(key: key);
 
