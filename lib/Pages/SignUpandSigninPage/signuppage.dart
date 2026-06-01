@@ -2,9 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../LandingPages/LandingPage3.dart';
 
-// =========================================================================
-// 1. SIGN IN PAGE (Sesuai Desain Kanan di Screenshot 2026-05-31 214317.png)
-// =========================================================================
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
 
@@ -30,7 +27,6 @@ class _SignInPageState extends State<SignInPage> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Background Image Full Screen
           Container(
             width: double.infinity,
             height: double.infinity,
@@ -38,13 +34,12 @@ class _SignInPageState extends State<SignInPage> {
               image: DecorationImage(
                 image: NetworkImage(
                   'https://images.unsplash.com/photo-1544698310-74ea9d1c8258?w=800',
-                ), // Ganti asset lokal jika ada
+                ),
                 fit: BoxFit.cover,
               ),
             ),
           ),
 
-          // Konten Utama dengan Card Transparan (Frosted Glass) di Tengah
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
@@ -69,14 +64,13 @@ class _SignInPageState extends State<SignInPage> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // Logo Ikon Daun Hijau di Atas Teks
                             Center(
                               child: Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   color: const Color(
                                     0xFFD4EC32,
-                                  ), // Lime/Yellow Green dari Figma
+                                  ),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: const Icon(
@@ -88,7 +82,6 @@ class _SignInPageState extends State<SignInPage> {
                             ),
                             const SizedBox(height: 16),
 
-                            // Title Welcome Back
                             const Text(
                               "WELCOME BACK",
                               textAlign: TextAlign.center,
@@ -112,7 +105,6 @@ class _SignInPageState extends State<SignInPage> {
                             ),
                             const SizedBox(height: 24),
 
-                            // Label & Field Email
                             _buildFieldLabel("Email"),
                             _buildInputField(
                               controller: _emailController,
@@ -122,7 +114,6 @@ class _SignInPageState extends State<SignInPage> {
                             ),
                             const SizedBox(height: 16),
 
-                            // Label & Field Password
                             _buildFieldLabel("Password"),
                             _buildInputField(
                               controller: _passwordController,
@@ -133,7 +124,6 @@ class _SignInPageState extends State<SignInPage> {
                             ),
                             const SizedBox(height: 24),
 
-                            // Tombol SIGN IN (Lime Green Melengkung Sempurna)
                             SizedBox(
                               height: 50,
                               child: ElevatedButton(
@@ -147,7 +137,6 @@ class _SignInPageState extends State<SignInPage> {
                                 ),
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
-                                    // Handle Sign In Action
                                   }
                                 },
                                 child: const Text(
@@ -161,15 +150,12 @@ class _SignInPageState extends State<SignInPage> {
                             ),
                             const SizedBox(height: 24),
 
-                            // Garis Pembatas Or Sign In with Email
                             _buildDivider("Or Sign In with Email"),
                             const SizedBox(height: 20),
 
-                            // Tombol Google & Facebook Berdampingan Kotak Putih
                             _buildSocialButtonsRow(),
                             const SizedBox(height: 24),
 
-                            // Footer Link ke Sign Up Page
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -182,7 +168,6 @@ class _SignInPageState extends State<SignInPage> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    // Tambahkan Navigasi ke SignUpPage di sini jika memakai Router
                                   },
                                   child: const Text(
                                     "Register Now",
@@ -210,9 +195,6 @@ class _SignInPageState extends State<SignInPage> {
   }
 }
 
-// =========================================================================
-// 2. SIGN UP PAGE (Sesuai Desain Kiri di Screenshot 2026-05-31 214317.png)
-// =========================================================================
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
@@ -241,7 +223,6 @@ class _SignUpPageState extends State<SignUpPage> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Elemen Latar Belakang Lengkungan Hijau/Lime di Bagian Bawah
           Positioned(
             bottom: 0,
             left: 0,
@@ -253,7 +234,6 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
           ),
 
-          // Struktur Form Utama Atas Putih - Bawah Hijau
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
@@ -267,7 +247,6 @@ class _SignUpPageState extends State<SignUpPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Ikon Daun Hijau atas
                       Center(
                         child: Container(
                           padding: const EdgeInsets.all(12),
@@ -284,7 +263,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Judul Utama CREATE NEW ACCOUNT
                       const Text(
                         "CREATE NEW ACCOUNT",
                         textAlign: TextAlign.center,
@@ -308,18 +286,15 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       const SizedBox(height: 24),
 
-                      // Tombol Sosial Media Kotak Atas
                       _buildSocialButtonsRow(),
                       const SizedBox(height: 24),
 
-                      // Pembatas Garis
                       _buildDivider(
                         "Or Sign Up with Email",
                         isDarkTheme: false,
                       ),
                       const SizedBox(height: 20),
 
-                      // Input Form
                       _buildFieldLabel("Full Name", isDarkTheme: false),
                       _buildInputField(
                         controller: _nameController,
@@ -351,7 +326,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Checkbox Persetujuan Syarat
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -382,7 +356,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       const SizedBox(height: 28),
 
-                      // Tombol CREATE ACCOUNT Hitam Panjang Berisi Teks Hijau
                       SizedBox(
                         height: 52,
                         child: ElevatedButton(
@@ -397,7 +370,6 @@ class _SignUpPageState extends State<SignUpPage> {
                           onPressed: () {
                             if (_formKey.currentState!.validate() &&
                                 _isChecked) {
-                              // Handle Sign Up Action
                             }
                           },
                           child: const Text(
@@ -412,7 +384,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       const SizedBox(height: 20),
 
-                      // Footer Balik ke Login
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -425,7 +396,6 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              // Navigasi balik ke SignInPage
                             },
                             child: const Text(
                               "Sign in",
@@ -451,11 +421,6 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 }
 
-// =========================================================================
-// 3. KOMPONEN PEMBANTU (WIDGET HELPERS)
-// =========================================================================
-
-// Label Input Field kecil diatas kotak isi
 Widget _buildFieldLabel(String label, {bool isDarkTheme = true}) {
   return Padding(
     padding: const EdgeInsets.only(left: 4, bottom: 6),
@@ -470,7 +435,6 @@ Widget _buildFieldLabel(String label, {bool isDarkTheme = true}) {
   );
 }
 
-// Desain Input Field Putih Polos Melengkung Sesuai Gambar
 Widget _buildInputField({
   required TextEditingController controller,
   bool isPassword = false,
@@ -509,7 +473,6 @@ Widget _buildInputField({
   );
 }
 
-// Garis Tengah Pembatas Or Sign In/Up
 Widget _buildDivider(String text, {bool isDarkTheme = true}) {
   Color color = isDarkTheme ? Colors.white38 : Colors.black38;
   return Row(
@@ -524,7 +487,6 @@ Widget _buildDivider(String text, {bool isDarkTheme = true}) {
   );
 }
 
-// Baris berisi 2 tombol Sosial Media (Google & Facebook) berbentuk rounded rectangle putih
 Widget _buildSocialButtonsRow() {
   return Row(
     children: [
@@ -559,7 +521,6 @@ Widget _socialSquareButton(IconData icon, Color iconColor, VoidCallback onTap) {
   );
 }
 
-// Clipper Khusus untuk lengkungan bagian bawah Halaman Sign Up
 class BottomWaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

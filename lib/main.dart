@@ -1,13 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
-import 'package:supabase_flutter/supabase_flutter.dart'; // <-- Jangan lupa import ini
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:greengymapp/Pages/LandingPages/LandingPage1.dart';
 import 'package:greengymapp/Pages/MapPages/MainMapPage.dart';
 import 'package:greengymapp/Pages/SignUpandSignInPage/signuppage.dart';
 import 'package:greengymapp/Pages/SessionPages/SessionPage1.dart';
 
+
+//mennyambungkan flutter dengan supabase
 Future<void> main() async {
   await Supabase.initialize(
    url: 'https://lloibeyejbqfqklnimtn.supabase.co',
