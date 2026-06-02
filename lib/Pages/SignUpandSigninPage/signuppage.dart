@@ -1,6 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import '../LandingPages/LandingPage3.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:greengymapp/Pages/MapPages/MainMapPage.dart';
+
+final _supabase = Supabase.instance.client;
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -13,12 +16,59 @@ class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _signIn() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+    try {
+      await _supabase.auth.signInWithPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const MainMapScreen()),
+          (route) => false,
+        );
+      }
+    } on AuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Terjadi kesalahan. Coba lagi.'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  void _goToSignUp() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const SignUpPage()),
+    );
   }
 
   @override
@@ -64,13 +114,12 @@ class _SignInPageState extends State<SignInPage> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
+                            // Logo
                             Center(
                               child: Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: const Color(
-                                    0xFFD4EC32,
-                                  ),
+                                  color: const Color(0xFFD4EC32),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: const Icon(
@@ -88,7 +137,6 @@ class _SignInPageState extends State<SignInPage> {
                               style: TextStyle(
                                 fontFamily: 'BebasNeue',
                                 fontSize: 28,
-
                                 color: Colors.white,
                                 letterSpacing: 1.0,
                               ),
@@ -98,7 +146,7 @@ class _SignInPageState extends State<SignInPage> {
                               "Log in to continue your urban fitness community.",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontFamily : 'BebasNeue',
+                                fontFamily: 'BebasNeue',
                                 color: Colors.white.withOpacity(0.7),
                                 fontSize: 13,
                               ),
@@ -109,7 +157,7 @@ class _SignInPageState extends State<SignInPage> {
                             _buildInputField(
                               controller: _emailController,
                               validator: (val) => val == null || val.isEmpty
-                                  ? "Email cannot be empty"
+                                  ? "Email tidak boleh kosong"
                                   : null,
                             ),
                             const SizedBox(height: 16),
@@ -119,7 +167,7 @@ class _SignInPageState extends State<SignInPage> {
                               controller: _passwordController,
                               isPassword: true,
                               validator: (val) => val == null || val.isEmpty
-                                  ? "Password cannot be empty"
+                                  ? "Password tidak boleh kosong"
                                   : null,
                             ),
                             const SizedBox(height: 24),
@@ -135,17 +183,23 @@ class _SignInPageState extends State<SignInPage> {
                                   ),
                                   elevation: 0,
                                 ),
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
-                                  }
-                                },
-                                child: const Text(
-                                  "SIGN IN",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                onPressed: _isLoading ? null : _signIn,
+                                child: _isLoading
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.black,
+                                        ),
+                                      )
+                                    : const Text(
+                                        "SIGN IN",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                               ),
                             ),
                             const SizedBox(height: 24),
@@ -156,6 +210,7 @@ class _SignInPageState extends State<SignInPage> {
                             _buildSocialButtonsRow(),
                             const SizedBox(height: 24),
 
+                            // Footer → ke Sign Up
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -167,8 +222,7 @@ class _SignInPageState extends State<SignInPage> {
                                   ),
                                 ),
                                 GestureDetector(
-                                  onTap: () {
-                                  },
+                                  onTap: _goToSignUp,
                                   child: const Text(
                                     "Register Now",
                                     style: TextStyle(
@@ -208,6 +262,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isChecked = false;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -215,6 +270,68 @@ class _SignUpPageState extends State<SignUpPage> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _signUp() async {
+    if (!_formKey.currentState!.validate() || !_isChecked) {
+      if (!_isChecked) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Kamu harus setuju dengan syarat & ketentuan.'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+      return;
+    }
+
+    setState(() => _isLoading = true);
+    try {
+      await _supabase.auth.signUp(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        data: {'full_name': _nameController.text.trim()},
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Akun berhasil dibuat! Silakan sign in.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const SignInPage()),
+        );
+      }
+    } on AuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Terjadi kesalahan. Coba lagi.'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  void _goToSignIn() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const SignInPage()),
+    );
   }
 
   @override
@@ -289,10 +406,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       _buildSocialButtonsRow(),
                       const SizedBox(height: 24),
 
-                      _buildDivider(
-                        "Or Sign Up with Email",
-                        isDarkTheme: false,
-                      ),
+                      _buildDivider("Or Sign Up with Email", isDarkTheme: false),
                       const SizedBox(height: 20),
 
                       _buildFieldLabel("Full Name", isDarkTheme: false),
@@ -300,7 +414,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         controller: _nameController,
                         isDarkTheme: false,
                         validator: (val) => val == null || val.isEmpty
-                            ? "Name cannot be empty"
+                            ? "Nama tidak boleh kosong"
                             : null,
                       ),
                       const SizedBox(height: 14),
@@ -310,7 +424,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         controller: _emailController,
                         isDarkTheme: false,
                         validator: (val) => val == null || val.isEmpty
-                            ? "Email cannot be empty"
+                            ? "Email tidak boleh kosong"
                             : null,
                       ),
                       const SizedBox(height: 14),
@@ -320,9 +434,15 @@ class _SignUpPageState extends State<SignUpPage> {
                         controller: _passwordController,
                         isPassword: true,
                         isDarkTheme: false,
-                        validator: (val) => val == null || val.isEmpty
-                            ? "Password cannot be empty"
-                            : null,
+                        validator: (val) {
+                          if (val == null || val.isEmpty) {
+                            return "Password tidak boleh kosong";
+                          }
+                          if (val.length < 6) {
+                            return "Password minimal 6 karakter";
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 16),
 
@@ -367,19 +487,24 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                             elevation: 0,
                           ),
-                          onPressed: () {
-                            if (_formKey.currentState!.validate() &&
-                                _isChecked) {
-                            }
-                          },
-                          child: const Text(
-                            "CREATE ACCOUNT",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Impact',
-                            ),
-                          ),
+                          onPressed: _isLoading ? null : _signUp,
+                          child: _isLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Color(0xFFD4EC32),
+                                  ),
+                                )
+                              : const Text(
+                                  "CREATE ACCOUNT",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Impact',
+                                  ),
+                                ),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -395,8 +520,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {
-                            },
+                            onTap: _goToSignIn,
                             child: const Text(
                               "Sign in",
                               style: TextStyle(
@@ -420,6 +544,7 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 }
+
 
 Widget _buildFieldLabel(String label, {bool isDarkTheme = true}) {
   return Padding(
