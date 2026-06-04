@@ -24,7 +24,7 @@ Future<void> main() async {
 }
 
 class GreenGymApp extends StatelessWidget {
-  const GreenGymApp({Key? key}) : super(key: key);
+  const GreenGymApp({super.key});
 
   @override
   Widget build(BuildContext context) {
