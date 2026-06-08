@@ -2,10 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'pages/ProfilePages/profilePage.dart';
 
-import 'package:greengymapp/Pages/LandingPages/LandingPage1.dart';
-import 'package:greengymapp/Pages/MapPages/MainMapPage.dart';
-import 'package:greengymapp/Pages/SignUpandSignInPage/signuppage.dart';
 import 'package:greengymapp/Pages/SessionPages/SessionPage1.dart';
 
 
@@ -38,7 +36,7 @@ class GreenGymApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFFE1DCD3), 
       ),
-      home: const SessionPage(), 
+      home: const ProfilePage(), 
     );
   }
 }
