@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:fitarena/Pages/ProfilePages/badge_gallery_page.dart';
 import 'package:fitarena/Pages/ProfilePages/level_evolution_page.dart';
-import 'fitness_summary_page.dart'; 
+import 'package:fitarena/Pages/ProfilePages/my_rewards_page.dart';
+import 'package:fitarena/Pages/SignUpandSigninPage/signuppage.dart';
+import 'package:fitarena/widgets/fit_dialog.dart';
+import 'fitness_summary_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -140,18 +144,59 @@ class ProfilePage extends StatelessWidget {
               
               _buildMenuItem('FITNESS SUMMARY', onTap: () {
                 Navigator.push(
-                  context, 
+                  context,
                   MaterialPageRoute(builder: (context) => const FitnessSummaryPage()),
+                );
+              }),
+
+              _buildMenuItem('MY REWARDS', onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyRewardsPage()),
                 );
               }),
               const SizedBox(height: 30),
 
               // --- ACCOUNT SETTINGS ---
               _buildSectionHeader('ACCOUNT SETTINGS'),
-              _buildMenuItem('EDIT ATHLETE PROFILE', onTap: () {}),
-              _buildMenuItem('SPORT HISTORY', onTap: () {}),
-              _buildMenuItem('PRIVACY & SECURITY', onTap: () {}),
-              _buildMenuItem('LOG OUT', onTap: () {}),
+              _buildMenuItem('EDIT ATHLETE PROFILE', onTap: () {
+                showFitInfoDialog(
+                  context,
+                  title: 'UNDER CONSTRUCTION',
+                  message: 'This feature is under construction.',
+                );
+              }),
+              _buildMenuItem('SPORT HISTORY', onTap: () {
+                showFitInfoDialog(
+                  context,
+                  title: 'UNDER CONSTRUCTION',
+                  message: 'This feature is under construction.',
+                );
+              }),
+              _buildMenuItem('PRIVACY & SECURITY', onTap: () {
+                showFitInfoDialog(
+                  context,
+                  title: 'UNDER CONSTRUCTION',
+                  message: 'This feature is under construction.',
+                );
+              }),
+              _buildMenuItem('LOG OUT', onTap: () async {
+                final ok = await showFitConfirmDialog(
+                  context,
+                  title: 'LOG OUT',
+                  message: 'Are you sure you want to log out?',
+                );
+                if (!ok) return;
+                try {
+                  await Supabase.instance.client.auth.signOut();
+                } catch (_) {}
+                if (!context.mounted) return;
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SignInPage()),
+                  (route) => false,
+                );
+              }),
               const SizedBox(height: 40),
             ],
           ),

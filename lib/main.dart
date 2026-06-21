@@ -2,7 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:fitarena/Pages/SplashScreen.dart';
+import 'package:fitarena/Pages/MainNavigation.dart';
+// import 'package:fitarena/Pages/SplashScreen.dart'; // alur normal: Splash → Landing
 
 
 //mennyambungkan flutter dengan supabase
@@ -35,7 +36,9 @@ class FitArenaApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFFE1DCD3),
       ),
-      home: const SplashScreen(),
+      // Sementara langsung ke home untuk memudahkan testing.
+      // Ganti ke `const SplashScreen()` untuk alur lengkap (Splash → Landing → Login).
+      home: const MainNavigation(),
     );
   }
 }

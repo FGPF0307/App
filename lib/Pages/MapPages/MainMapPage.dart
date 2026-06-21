@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:fitarena/Pages/SessionPages/session_models.dart';
+import 'package:fitarena/Pages/SessionPages/JoinSessionPage.dart';
 
 class MainMapScreen extends StatefulWidget {
   const MainMapScreen({super.key});
@@ -14,19 +16,18 @@ class _MainMapScreenState extends State<MainMapScreen> {
   final LatLng _initialCenter = const LatLng(-6.2246, 106.6531);
   final MapController _mapController = MapController();
 
-  // ─── FUNGSI TRIGGER BOTTOM SHEET ───
-  void _showLocationDetails(BuildContext context) {
+  // ─── BOTTOM SHEET DETAIL SESI ───
+  void _showSessionDetails(BuildContext context, SessionData session) {
     const Color darkCharcoal = Color(0xFF0F110F);
-    const Color lightGreen = Color(0xFFCEE5A4);
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent, // Transparan agar bisa mengatur sudut melengkung manual
-      builder: (context) {
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
         return Container(
           width: double.infinity,
-          padding: const EdgeInsets.fromLTRB(24, 32, 24, 40),
+          padding: const EdgeInsets.fromLTRB(24, 28, 24, 32),
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
@@ -35,72 +36,63 @@ class _MainMapScreenState extends State<MainMapScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. JUDUL LOKASI
-              const Text(
-                'DECATHLON\nALAM SUTERA',
-                style: TextStyle(
+              Text(
+                session.title,
+                style: const TextStyle(
                   fontFamily: 'BebasNeue',
-                  fontSize: 48,
-                  height: 0.9,
+                  fontSize: 44,
+                  height: 0.95,
                   color: darkCharcoal,
                 ),
               ),
-              const SizedBox(height: 16),
-
-              // 2. KOTAK KEPADATAN (CROWD DENSITY)
-              Container(
-                color: lightGreen,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text('CROWD DENSITY', style: TextStyle(fontFamily: 'JetBrainsMono', fontSize: 12, letterSpacing: 1.5, color: darkCharcoal)),
-                    SizedBox(height: 4),
-                    Text('LOW', style: TextStyle(fontFamily: 'BebasNeue', fontSize: 24, color: darkCharcoal)),
-                  ],
+              const SizedBox(height: 6),
+              Text(
+                session.location.toUpperCase(),
+                style: const TextStyle(
+                  fontFamily: 'JetBrainsMono',
+                  fontSize: 16,
+                  letterSpacing: 1.0,
+                  color: darkCharcoal,
                 ),
               ),
+              const SizedBox(height: 20),
+              const Divider(color: Colors.black, thickness: 1),
+              _detailRow('HOST', session.host.toUpperCase()),
+              const Divider(color: Colors.black, thickness: 1),
+              _detailRow(
+                  'SPOTS', '${session.slotsLeft} / ${session.spotsTotal} LEFT'),
+              const Divider(color: Colors.black, thickness: 1),
+              _detailRow('TIME', '${session.startTime} - ${session.endTime}'),
               const SizedBox(height: 24),
-              const Divider(color: Colors.black, thickness: 1),
-              const SizedBox(height: 16),
 
-              // 3. LOCAL LEGEND
-              const Text('CURRENT LOCAL LEGEND', style: TextStyle(fontFamily: 'JetBrainsMono', fontSize: 12, letterSpacing: 1.5, color: darkCharcoal)),
-              const SizedBox(height: 8),
-              const Padding(
-                padding: EdgeInsets.only(left: 24.0), // Indentasi nama
-                child: Text('FARREL GANENDRA', style: TextStyle(fontFamily: 'BebasNeue', fontSize: 28, color: darkCharcoal)),
-              ),
-              const SizedBox(height: 16),
-              const Divider(color: Colors.black, thickness: 1),
-              const SizedBox(height: 16),
-
-              // 4. ACTIVE TIME
-              const Text('ACTIVE TIME', style: TextStyle(fontFamily: 'JetBrainsMono', fontSize: 12, letterSpacing: 1.5, color: darkCharcoal)),
-              const SizedBox(height: 8),
-              const Padding(
-                padding: EdgeInsets.only(left: 24.0),
-                child: Text('08.00 - 22.00', style: TextStyle(fontFamily: 'BebasNeue', fontSize: 28, color: darkCharcoal)),
-              ),
-              const SizedBox(height: 32),
-
-              // 5. TOMBOL CHECK DETAILS
+              // TOMBOL CHECK DETAILS → halaman Join This Session
               SizedBox(
                 width: double.infinity,
-                height: 70, // Tombol tinggi besar kaku
+                height: 64,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: lightGreen,
-                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero), // Sudut tajam
+                    backgroundColor: darkCharcoal,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero),
                     elevation: 0,
                   ),
                   onPressed: () {
-                    // Logika masuk ke halaman detail
-                    Navigator.pop(context); // Menutup bottom sheet
+                    Navigator.pop(sheetContext);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => JoinSessionPage(session: session),
+                      ),
+                    );
                   },
                   child: const Text(
                     'CHECK DETAILS',
-                    style: TextStyle(fontFamily: 'BebasNeue', fontSize: 32, color: darkCharcoal),
+                    style: TextStyle(
+                      fontFamily: 'BebasNeue',
+                      fontSize: 30,
+                      letterSpacing: 1.0,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -108,6 +100,38 @@ class _MainMapScreenState extends State<MainMapScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget _detailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontFamily: 'JetBrainsMono',
+              fontSize: 12,
+              letterSpacing: 1.5,
+              color: Colors.black54,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontFamily: 'BebasNeue',
+                fontSize: 26,
+                color: Color(0xFF0F110F),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -191,8 +215,8 @@ class _MainMapScreenState extends State<MainMapScreen> {
                         height: 50,
                         child: GestureDetector(
                           onTap: () {
-                            // Saat pin merah diklik, Bottom Sheet akan muncul
-                            _showLocationDetails(context);
+                            // Saat pin diklik, detail sesi muncul
+                            _showSessionDetails(context, exploreSessions.first);
                           },
                           child: const Icon(
                             Icons.location_on, // Menggunakan pin merah standar map
