@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:greengymapp/Pages/ProfilePages/badge_gallery_page.dart';
-import 'package:greengymapp/Pages/ProfilePages/level_evolution_page.dart';
+import 'package:fitarena/Pages/ProfilePages/badge_gallery_page.dart';
+import 'package:fitarena/Pages/ProfilePages/level_evolution_page.dart';
 import 'fitness_summary_page.dart'; 
 
 class ProfilePage extends StatelessWidget {

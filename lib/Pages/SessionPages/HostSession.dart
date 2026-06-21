@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:greengymapp/Pages/SessionPages/session_models.dart';
+import 'package:fitarena/Pages/SessionPages/session_models.dart';
 
 // =====================================================================
 // Palet warna bersama untuk seluruh alur Host Session

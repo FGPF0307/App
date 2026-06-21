@@ -1,4 +1,4 @@
-# greengymapp
+# FitArena
 
 A new Flutter project.
 

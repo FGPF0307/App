@@ -1,7 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:greengymapp/Pages/MapPages/MainMapPage.dart';
+import 'package:fitarena/Pages/MainNavigation.dart';
+import 'package:fitarena/widgets/fitarena_logo.dart';
 
 final _supabase = Supabase.instance.client;
 
@@ -37,7 +38,7 @@ class _SignInPageState extends State<SignInPage> {
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const MainMapScreen()),
+          MaterialPageRoute(builder: (context) => const MainNavigation()),
           (route) => false,
         );
       }
@@ -119,14 +120,10 @@ class _SignInPageState extends State<SignInPage> {
                               child: Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFD4EC32),
-                                  borderRadius: BorderRadius.circular(12),
+                                  color: const Color(0xFFF5F5F5),
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
-                                child: const Icon(
-                                  Icons.spa_rounded,
-                                  color: Colors.black,
-                                  size: 28,
-                                ),
+                                child: const FitArenaLogo(size: 56),
                               ),
                             ),
                             const SizedBox(height: 16),
@@ -368,14 +365,10 @@ class _SignUpPageState extends State<SignUpPage> {
                         child: Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFD4EC32),
-                            borderRadius: BorderRadius.circular(12),
+                            color: const Color(0xFFF5F5F5),
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                          child: const Icon(
-                            Icons.spa_rounded,
-                            color: Colors.black,
-                            size: 28,
-                          ),
+                          child: const FitArenaLogo(size: 56),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -465,7 +458,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           const SizedBox(width: 10),
                           const Expanded(
                             child: Text(
-                              "I agree to the Terms & Conditions and Privacy Policy of GreenGym.",
+                              "I agree to the Terms & Conditions and Privacy Policy of FitArena.",
                               style: TextStyle(
                                 color: Colors.black87,
                                 fontSize: 12,

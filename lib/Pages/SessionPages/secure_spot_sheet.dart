@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:greengymapp/Pages/SessionPages/session_models.dart';
-import 'package:greengymapp/Pages/SessionPages/JoinSessionPage.dart';
+import 'package:fitarena/Pages/SessionPages/session_models.dart';
+import 'package:fitarena/Pages/SessionPages/JoinSessionPage.dart';
 
 /// Menampilkan bottom sheet "Secure My Spot" yang muncul menggeser dari bawah.
 /// Tombol "Secure My Spot" / "View Details" akan membuka halaman

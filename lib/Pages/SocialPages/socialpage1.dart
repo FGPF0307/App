@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'socialpage2.dart'; 
+import 'socialpage2.dart';
 import 'socialpage3.dart'; // Memastikan rute ke halaman daftar pesan aktif
+import 'socialpage4.dart'; // Group chatroom (Open Chat)
 import 'socialpage5.dart'; // Memastikan rute ke chatroom personal aktif
+import 'community_store.dart';
+import 'package:fitarena/Pages/SessionPages/session_models.dart';
+import 'package:fitarena/Pages/SessionPages/JoinSessionPage.dart';
 
 class Socialpage1 extends StatefulWidget {
   const Socialpage1({Key? key}) : super(key: key);
@@ -125,27 +129,18 @@ class _Socialpage1State extends State<Socialpage1> {
               // ==========================================
               _buildSectionTitle('ACTIVE SESSION HUB'),
               const SizedBox(height: 10),
-              _buildActiveSessionCard(
-                number: '01',
-                title: 'MORNING RUN CLUB',
-                location: 'IKEA Alam Sutera',
-                time: '18.00',
-                slotsLeft: '3 slots left',
-              ),
-              _buildActiveSessionCard(
-                number: '02',
-                title: 'SUNDAY TENNIS',
-                location: 'Tenis Court',
-                time: '10.00',
-                slotsLeft: '3 slots left',
-              ),
-              _buildActiveSessionCard(
-                number: '03',
-                title: 'SLOW YOGA',
-                location: 'Yoga Station',
-                time: '15.00',
-                slotsLeft: '5 slots left',
-              ),
+              // Data disamakan dengan Explore All (exploreSessions). JOIN
+              // membawa ke halaman detail "Join This Session".
+              for (final s in exploreSessions)
+                _buildActiveSessionCard(
+                  session: s,
+                  onJoin: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => JoinSessionPage(session: s),
+                    ),
+                  ),
+                ),
 
               const SizedBox(height: 24),
 
@@ -164,19 +159,26 @@ class _Socialpage1State extends State<Socialpage1> {
                 },
               ),
               const SizedBox(height: 10),
-              _buildCommunityChatCard(
-                title: 'BASKET SWEAT CLUB',
-                members: '20 Members',
-                lastMessage: '“where are you guys right now??....“',
-                imageUrl:
-                    'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=100',
-              ),
-              _buildCommunityChatCard(
-                title: 'RUNNER CLUB',
-                members: '28 Members',
-                lastMessage: '“Are we going to run right now??....“',
-                imageUrl:
-                    'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=100',
+              // Daftar reaktif — bertambah otomatis saat user join sebuah sesi.
+              AnimatedBuilder(
+                animation: CommunityStore.instance,
+                builder: (context, _) {
+                  return Column(
+                    children: [
+                      for (final c in CommunityStore.instance.communities)
+                        _buildCommunityChatCard(
+                          community: c,
+                          onOpenChat: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const Socialpage4(),
+                              settings: RouteSettings(arguments: c),
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
               ),
 
               const SizedBox(height: 24),
@@ -311,11 +313,8 @@ class _Socialpage1State extends State<Socialpage1> {
   }
 
   Widget _buildActiveSessionCard({
-    required String number,
-    required String title,
-    required String location,
-    required String time,
-    required String slotsLeft,
+    required SessionData session,
+    required VoidCallback onJoin,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -325,7 +324,7 @@ class _Socialpage1State extends State<Socialpage1> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            number,
+            session.number,
             style: const TextStyle(
               fontFamily: 'BebasNeue',
               fontSize: 36,
@@ -338,7 +337,7 @@ class _Socialpage1State extends State<Socialpage1> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  session.title,
                   style: const TextStyle(
                     fontFamily: 'BebasNeue',
                     fontSize: 16,
@@ -350,7 +349,7 @@ class _Socialpage1State extends State<Socialpage1> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      location,
+                      session.location,
                       style: const TextStyle(
                         fontFamily: 'JetBrainsMono',
                         fontSize: 11,
@@ -358,7 +357,7 @@ class _Socialpage1State extends State<Socialpage1> {
                       ),
                     ),
                     Text(
-                      '• $time',
+                      '• ${session.startTime}',
                       style: const TextStyle(
                         fontFamily: 'JetBrainsMono',
                         fontSize: 11,
@@ -370,16 +369,16 @@ class _Socialpage1State extends State<Socialpage1> {
                 const SizedBox(height: 2),
                 Row(
                   children: [
-                    const Text(
-                      'Today ',
-                      style: TextStyle(
+                    Text(
+                      '${session.day} ',
+                      style: const TextStyle(
                         fontFamily: 'JetBrainsMono',
                         fontSize: 11,
                         color: Colors.black87,
                       ),
                     ),
                     Text(
-                      '• $slotsLeft',
+                      '• ${session.slotsLeft} slots left',
                       style: const TextStyle(
                         fontFamily: 'JetBrainsMono',
                         fontSize: 11,
@@ -403,7 +402,7 @@ class _Socialpage1State extends State<Socialpage1> {
                         ),
                         padding: EdgeInsets.zero,
                       ),
-                      onPressed: () {},
+                      onPressed: onJoin,
                       child: const Text(
                         'JOIN',
                         style: TextStyle(
@@ -424,10 +423,8 @@ class _Socialpage1State extends State<Socialpage1> {
   }
 
   Widget _buildCommunityChatCard({
-    required String title,
-    required String members,
-    required String lastMessage,
-    required String imageUrl,
+    required CommunityData community,
+    required VoidCallback onOpenChat,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -439,12 +436,14 @@ class _Socialpage1State extends State<Socialpage1> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: const TextStyle(fontFamily: 'BebasNeue', fontSize: 18),
+              Expanded(
+                child: Text(
+                  community.title,
+                  style: const TextStyle(fontFamily: 'BebasNeue', fontSize: 18),
+                ),
               ),
               Text(
-                members,
+                community.members,
                 style: const TextStyle(
                   fontFamily: 'JetBrainsMono',
                   fontSize: 11,
@@ -459,19 +458,13 @@ class _Socialpage1State extends State<Socialpage1> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(6),
-                child: Image.network(
-                  imageUrl,
-                  width: 44,
-                  height: 44,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) =>
-                      const Icon(Icons.group, size: 24),
-                ),
+                child: communityImage(community.imageUrl,
+                    width: 44, height: 44),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  lastMessage,
+                  community.lastMessage,
                   style: const TextStyle(
                     fontFamily: 'JetBrainsMono',
                     fontSize: 11,
@@ -495,7 +488,7 @@ class _Socialpage1State extends State<Socialpage1> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 minimumSize: const Size(100, 28),
               ),
-              onPressed: () {},
+              onPressed: onOpenChat,
               child: const Text(
                 'Open Chat',
                 style: TextStyle(

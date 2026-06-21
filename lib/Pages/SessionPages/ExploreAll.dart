@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:greengymapp/Pages/SessionPages/session_models.dart';
-import 'package:greengymapp/Pages/SessionPages/secure_spot_sheet.dart';
+import 'package:fitarena/Pages/SessionPages/session_models.dart';
+import 'package:fitarena/Pages/SessionPages/secure_spot_sheet.dart';
 
 class ExploreAllTab extends StatelessWidget {
   const ExploreAllTab({super.key});

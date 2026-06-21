@@ -179,7 +179,7 @@ class _MainMapScreenState extends State<MainMapScreen> {
                 children: [
                   TileLayer(
                     urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'com.greengym.app',
+                    userAgentPackageName: 'com.fitarena.app',
                   ),
                   
                   // Titik Lokasi

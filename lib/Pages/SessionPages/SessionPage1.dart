@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:greengymapp/Pages/SessionPages/ExploreAll.dart';
-import 'package:greengymapp/Pages/SessionPages/HostSession.dart';
-import 'package:greengymapp/Pages/SessionPages/JoinSessionPage.dart';
-import 'package:greengymapp/Pages/SessionPages/session_models.dart';
+import 'package:fitarena/Pages/SessionPages/ExploreAll.dart';
+import 'package:fitarena/Pages/SessionPages/HostSession.dart';
+import 'package:fitarena/Pages/SessionPages/JoinSessionPage.dart';
+import 'package:fitarena/Pages/SessionPages/session_models.dart';
 
 class SessionPage extends StatefulWidget {
   const SessionPage({super.key});

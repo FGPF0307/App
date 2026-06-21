@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:greengymapp/Pages/LandingPages/LandingPage2.dart';
+import 'package:fitarena/Pages/LandingPages/LandingPage2.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});

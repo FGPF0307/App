@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:greengymapp/Pages/MainNavigation.dart';
+import 'package:fitarena/Pages/SplashScreen.dart';
 
 
 //mennyambungkan flutter dengan supabase
@@ -13,28 +13,29 @@ Future<void> main() async {
  );
   runApp(
     DevicePreview(
-      enabled: !kReleaseMode, 
-      builder: (context) => const GreenGymApp(), 
+      enabled: !kReleaseMode,
+      builder: (context) => const FitArenaApp(),
     ),
   );
 }
 
-class GreenGymApp extends StatelessWidget {
-  const GreenGymApp({super.key});
+class FitArenaApp extends StatelessWidget {
+  const FitArenaApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       // Konfigurasi wajib Device Preview
-      useInheritedMediaQuery: true, 
+      useInheritedMediaQuery: true,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
-      
+
       debugShowCheckedModeBanner: false,
+      title: 'FitArena',
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFFE1DCD3), 
+        scaffoldBackgroundColor: const Color(0xFFE1DCD3),
       ),
-      home: const MainNavigation(),
+      home: const SplashScreen(),
     );
   }
 }

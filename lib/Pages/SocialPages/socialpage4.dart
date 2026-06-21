@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'community_store.dart';
 
 class Socialpage4 extends StatefulWidget {
   const Socialpage4({Key? key}) : super(key: key);
@@ -79,6 +80,14 @@ class _Socialpage4State extends State<Socialpage4> {
 
   @override
   Widget build(BuildContext context) {
+    // Komunitas yang dibuka dikirim lewat RouteSettings (boleh null → default).
+    final args = ModalRoute.of(context)?.settings.arguments;
+    final CommunityData? community = args is CommunityData ? args : null;
+    final String title = community?.title ?? 'BASKET SWEAT CLUB';
+    final String members = community?.members ?? '20 Members';
+    final String imageSrc = community?.imageUrl ??
+        'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=200';
+
     return Scaffold(
       backgroundColor: creamBg,
       body: SafeArea(
@@ -114,9 +123,9 @@ class _Socialpage4State extends State<Socialpage4> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                'BASKET SWEAT CLUB',
-                                style: TextStyle(
+                              Text(
+                                title,
+                                style: const TextStyle(
                                   fontFamily: 'BebasNeue',
                                   fontSize: 32,
                                   letterSpacing: 0.5,
@@ -135,9 +144,9 @@ class _Socialpage4State extends State<Socialpage4> {
                                     ),
                                   ),
                                   const SizedBox(width: 6),
-                                  const Text(
-                                    '20 Members',
-                                    style: TextStyle(
+                                  Text(
+                                    members,
+                                    style: const TextStyle(
                                       fontFamily: 'JetBrainsMono',
                                       fontSize: 14,
                                       color: Colors.black,
@@ -153,14 +162,7 @@ class _Socialpage4State extends State<Socialpage4> {
                   ),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=100',
-                      width: 56,
-                      height: 56,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          Container(width: 56, height: 56, color: Colors.grey),
-                    ),
+                    child: communityImage(imageSrc, width: 56, height: 56),
                   ),
                 ],
               ),

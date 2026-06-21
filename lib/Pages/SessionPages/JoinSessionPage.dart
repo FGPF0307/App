@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:greengymapp/Pages/SessionPages/session_models.dart';
+import 'package:fitarena/Pages/SessionPages/session_models.dart';
+import 'package:fitarena/Pages/SocialPages/community_store.dart';
 
 /// Halaman detail "Join This Session" (layar penuh).
 class JoinSessionPage extends StatelessWidget {
@@ -22,6 +23,8 @@ class JoinSessionPage extends StatelessWidget {
   void _join(BuildContext context) {
     final already = SessionStore.instance.isJoined(session);
     SessionStore.instance.join(session);
+    // Grup chat sesi ini ikut muncul di Sport Communities.
+    CommunityStore.instance.addFromSession(session);
 
     final messenger = ScaffoldMessenger.of(context);
     Navigator.of(context).pop(); // kembali ke Session page

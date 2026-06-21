@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:greengymapp/Pages/HomePages/homepage.dart';
-import 'package:greengymapp/Pages/MapPages/MainMapPage.dart';
-import 'package:greengymapp/Pages/SessionPages/SessionPage1.dart';
-import 'package:greengymapp/Pages/SocialPages/socialpage1.dart';
-import 'package:greengymapp/Pages/ProfilePages/profilePage.dart';
+import 'package:fitarena/Pages/HomePages/homepage.dart';
+import 'package:fitarena/Pages/MapPages/MainMapPage.dart';
+import 'package:fitarena/Pages/SessionPages/SessionPage1.dart';
+import 'package:fitarena/Pages/SocialPages/socialpage1.dart';
+import 'package:fitarena/Pages/ProfilePages/profilePage.dart';
 
 /// Kerangka utama aplikasi: menampung 5 halaman + bottom navigation bar
 /// custom dengan lingkaran hitam yang "menggeser" ke tab yang aktif.
