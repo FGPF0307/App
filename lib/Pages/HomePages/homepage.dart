@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:greengymapp/Pages/SessionPages/JoinSessionPage.dart';
+import 'package:greengymapp/Pages/SessionPages/session_models.dart';
 
 class FitnessDashboardPage extends StatelessWidget {
   const FitnessDashboardPage({super.key});
@@ -181,7 +183,13 @@ class FitnessDashboardPage extends StatelessWidget {
                     const SizedBox(height: 20),
                     // Tombol Check-in Now
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const JoinSessionPage(
+                              session: SessionData.running),
+                        ),
+                      ),
                       child: Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(vertical: 14),
@@ -246,7 +254,13 @@ class FitnessDashboardPage extends StatelessWidget {
                     const SizedBox(height: 20),
                     // Tombol View Details (Model Border Outline)
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const JoinSessionPage(
+                              session: SessionData.basketballActive),
+                        ),
+                      ),
                       child: Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(vertical: 12),
