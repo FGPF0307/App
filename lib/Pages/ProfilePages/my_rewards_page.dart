@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fitarena/widgets/fit_dialog.dart';
-
-class _Reward {
-  final String name; // boleh 2 baris (\n)
-  final int cost;
-  const _Reward(this.name, this.cost);
-
-  String get oneLine => name.replaceAll('\n', ' ');
-}
+import 'package:fitarena/services/reward_api.dart';
 
 class MyRewardsPage extends StatefulWidget {
   const MyRewardsPage({super.key});
@@ -22,18 +15,15 @@ class _MyRewardsPageState extends State<MyRewardsPage> {
   static const Color black = Color(0xFF111111);
 
   int _points = 2450;
+  late Future<List<RewardItem>> _future;
 
-  static const List<_Reward> _vouchers = [
-    _Reward('NIKE -20% OFF\nRUNNING SHOES', 100000),
-    _Reward('ADIDAS -10% OFF\nRUNNING SHOES', 100000),
-    _Reward('PUMA -5% OFF\nRUNNING SHOES', 100000),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _future = RewardApi.fetchRewards();
+  }
 
-  static const List<_Reward> _nutritions = [
-    _Reward('MILK\n(100 ML)', 20000),
-    _Reward('ISOTONIC DRINK\n(500 ML)', 35000),
-    _Reward('MINERAL WATER\n(500 ML)', 10000),
-  ];
+  void _reload() => setState(() => _future = RewardApi.fetchRewards());
 
   // Memisah ribuan: _grouped(100000, '.') -> "100.000"
   String _grouped(int n, String sep) {
@@ -46,7 +36,7 @@ class _MyRewardsPageState extends State<MyRewardsPage> {
     return buf.toString();
   }
 
-  Future<void> _redeem(_Reward r) async {
+  Future<void> _redeem(RewardItem r) async {
     if (_points < r.cost) {
       await showFitInfoDialog(
         context,
@@ -169,17 +159,78 @@ class _MyRewardsPageState extends State<MyRewardsPage> {
               ),
               const SizedBox(height: 32),
 
-              _sectionHeader('BRAND VOUCHERS'),
-              const SizedBox(height: 16),
-              for (final r in _vouchers) _rewardCard(r),
-
-              const SizedBox(height: 16),
-              _sectionHeader('NUTRITIONS & HYDRATIONS'),
-              const SizedBox(height: 16),
-              for (final r in _nutritions) _rewardCard(r),
+              // ── DAFTAR REWARD DARI API ──
+              FutureBuilder<List<RewardItem>>(
+                future: _future,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 40),
+                      child: Center(
+                        child: CircularProgressIndicator(color: Color(0xFF00342B)),
+                      ),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return _buildError();
+                  }
+                  final items = snapshot.data ?? const <RewardItem>[];
+                  final vouchers =
+                      items.where((r) => r.category == 'voucher').toList();
+                  final nutritions =
+                      items.where((r) => r.category == 'nutrition').toList();
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _sectionHeader('BRAND VOUCHERS'),
+                      const SizedBox(height: 16),
+                      for (final r in vouchers) _rewardCard(r),
+                      const SizedBox(height: 16),
+                      _sectionHeader('NUTRITIONS & HYDRATIONS'),
+                      const SizedBox(height: 16),
+                      for (final r in nutritions) _rewardCard(r),
+                    ],
+                  );
+                },
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildError() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 32),
+      child: Column(
+        children: [
+          const Icon(Icons.cloud_off, size: 44, color: Colors.black45),
+          const SizedBox(height: 10),
+          const Text(
+            'Gagal memuat reward.',
+            style: TextStyle(fontFamily: 'BebasNeue', fontSize: 22),
+          ),
+          const Text(
+            'Pastikan backend berjalan (npm run dev).',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontFamily: 'JetBrainsMono', fontSize: 11, color: Colors.black54),
+          ),
+          const SizedBox(height: 14),
+          GestureDetector(
+            onTap: _reload,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+              color: black,
+              child: const Text(
+                'RETRY',
+                style: TextStyle(
+                    fontFamily: 'BebasNeue', color: green, fontSize: 20),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -197,12 +248,13 @@ class _MyRewardsPageState extends State<MyRewardsPage> {
           ),
         ),
         const SizedBox(width: 12),
-        const Expanded(child: SizedBox(height: 5, child: ColoredBox(color: black))),
+        const Expanded(
+            child: SizedBox(height: 5, child: ColoredBox(color: black))),
       ],
     );
   }
 
-  Widget _rewardCard(_Reward r) {
+  Widget _rewardCard(RewardItem r) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(

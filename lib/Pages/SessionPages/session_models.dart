@@ -17,6 +17,7 @@ class SessionData {
   final int rewardPoints;
   final int xp;
   final String number; // "01" untuk daftar Explore
+  final String? id; // id dari backend (null untuk data statis lokal)
 
   const SessionData({
     required this.title,
@@ -32,6 +33,7 @@ class SessionData {
     this.rewardPoints = 200,
     this.xp = 300,
     this.number = '',
+    this.id,
   });
 
   int get slotsLeft => spotsTotal - spotsFilled;
@@ -44,6 +46,39 @@ class SessionData {
 
   /// "Today, 18.00 - 19.30"
   String get timeRange => '$day, $startTime - $endTime';
+
+  // ── Serialisasi JSON (untuk REST API) ──
+  factory SessionData.fromJson(Map<String, dynamic> json) => SessionData(
+        id: json['id'] as String?,
+        title: (json['title'] ?? '') as String,
+        location: (json['location'] ?? '') as String,
+        day: (json['day'] ?? 'Today') as String,
+        startTime: (json['startTime'] ?? '') as String,
+        endTime: (json['endTime'] ?? '') as String,
+        image: (json['image'] ?? '') as String,
+        isNetwork: true,
+        host: (json['host'] ?? 'Anonymous') as String,
+        spotsFilled: (json['spotsFilled'] as num?)?.toInt() ?? 0,
+        spotsTotal: (json['spotsTotal'] as num?)?.toInt() ?? 0,
+        rewardPoints: (json['rewardPoints'] as num?)?.toInt() ?? 200,
+        xp: (json['xp'] as num?)?.toInt() ?? 300,
+        number: (json['number'] ?? '') as String,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'location': location,
+        'day': day,
+        'startTime': startTime,
+        'endTime': endTime,
+        'image': image,
+        'host': host,
+        'spotsFilled': spotsFilled,
+        'spotsTotal': spotsTotal,
+        'rewardPoints': rewardPoints,
+        'xp': xp,
+        'number': number,
+      };
 
   /// Sesi "Running" default yang sudah ada di My Schedule sejak awal.
   /// Datanya disamakan dengan kartu "RUNNING (NEXT SESSION)" di Home:

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "ses_morning_run",
+    "title": "MORNING RUN CLUB",
+    "location": "IKEA Alam Sutera",
+    "day": "Today",
+    "startTime": "18.00",
+    "endTime": "19.30",
+    "image": "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&q=80",
+    "host": "John Greenjim",
+    "spotsFilled": 5,
+    "spotsTotal": 8,
+    "rewardPoints": 200,
+    "xp": 300,
+    "number": "01"
+  },
+  {
+    "id": "ses_sunday_tennis",
+    "title": "SUNDAY TENNIS",
+    "location": "Tennis Court",
+    "day": "Today",
+    "startTime": "10.00",
+    "endTime": "11.30",
+    "image": "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&q=80",
+    "host": "John Greenjim",
+    "spotsFilled": 3,
+    "spotsTotal": 6,
+    "rewardPoints": 150,
+    "xp": 250,
+    "number": "02"
+  },
+  {
+    "id": "ses_slow_yoga",
+    "title": "SLOW YOGA",
+    "location": "Yoga Station",
+    "day": "Today",
+    "startTime": "15.00",
+    "endTime": "16.00",
+    "image": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80",
+    "host": "John Greenjim",
+    "spotsFilled": 5,
+    "spotsTotal": 10,
+    "rewardPoints": 180,
+    "xp": 280,
+    "number": "03"
+  }
+]

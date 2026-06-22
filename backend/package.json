@@ -1,20 +1,21 @@
 {
-  "name": "backend",
+  "name": "fitarena-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "FitArena RESTful API (Express + JSON file store)",
+  "main": "src/server.js",
+  "type": "commonjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
   },
-  "keywords": [],
+  "keywords": ["fitarena", "express", "rest-api"],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "firebase-admin": "^13.10.0",
-    "mysql2": "^3.22.4"
+    "cors": "^2.8.5",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }

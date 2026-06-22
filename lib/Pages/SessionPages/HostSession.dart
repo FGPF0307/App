@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:fitarena/Pages/SessionPages/session_models.dart';
+import 'package:fitarena/services/session_api.dart';
 
 // =====================================================================
 // Palet warna bersama untuk seluruh alur Host Session
@@ -296,22 +296,12 @@ class _HostDetailsPageState extends State<HostDetailsPage> {
       xp: 300,
     );
 
-    // Simpan ke Supabase (best-effort — tidak menghalangi alur lokal)
+    // Kirim ke REST API backend (CREATE). Best-effort: kalau backend mati,
+    // sesi tetap muncul di My Schedule (lokal).
     try {
-      final formattedDate =
-          '${_selectedDay.toString().padLeft(2, '0')}/${_selectedMonth.toString().padLeft(2, '0')}/$_selectedYear';
-      await Supabase.instance.client.from('HostNewSessions').insert({
-        'Title': newSession.title,
-        'Sport_Category': widget.category,
-        'Location': location,
-        'Date': formattedDate,
-        'Start_Time': startTime,
-        'Duration': _durationController.text.trim(),
-        'Max_Participant': _maxParticipants,
-        'Notes': _notesController.text.trim(),
-      });
+      await SessionApi.createSession(newSession);
     } catch (_) {
-      // Abaikan kegagalan jaringan; sesi tetap muncul di My Schedule.
+      // Abaikan kegagalan jaringan; sesi tetap masuk My Schedule.
     }
 
     if (!mounted) return;

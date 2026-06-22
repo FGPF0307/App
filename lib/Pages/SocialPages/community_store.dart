@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:fitarena/services/api_config.dart';
 import 'package:fitarena/Pages/SessionPages/session_models.dart';
 
 /// Data satu komunitas / grup chat olahraga.
 class CommunityData {
+  final String? id;
   final String title;
   final String members;
   final String location;
@@ -11,6 +15,7 @@ class CommunityData {
   final String imageUrl; // URL http(s) ATAU path file lokal (hasil pick gallery)
 
   const CommunityData({
+    this.id,
     required this.title,
     this.members = '1 Member',
     this.location = '',
@@ -20,49 +25,98 @@ class CommunityData {
 
   bool get isNetwork =>
       imageUrl.startsWith('http://') || imageUrl.startsWith('https://');
+
+  factory CommunityData.fromJson(Map<String, dynamic> json) => CommunityData(
+        id: json['id'] as String?,
+        title: (json['title'] ?? '') as String,
+        members: (json['members'] ?? '1 Member') as String,
+        location: (json['location'] ?? '') as String,
+        lastMessage: (json['lastMessage'] ?? '') as String,
+        imageUrl: (json['imageUrl'] ?? '') as String,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'members': members,
+        'location': location,
+        'lastMessage': lastMessage,
+        'imageUrl': imageUrl,
+      };
 }
 
-/// State terpusat daftar komunitas. Saat user join sebuah sesi, grup chatnya
-/// otomatis bertambah di sini dan semua halaman yang mendengarkan ikut update.
+/// Store komunitas yang didukung REST API. Daftar diambil dari backend
+/// (`GET /api/communities`); menambah komunitas mengirim `POST`. Tetap
+/// `ChangeNotifier` agar UI (socialpage1/2) reaktif.
 class CommunityStore extends ChangeNotifier {
   CommunityStore._();
   static final CommunityStore instance = CommunityStore._();
 
-  final List<CommunityData> _communities = [
-    const CommunityData(
-      title: 'BASKET SWEAT CLUB',
-      members: '20 Members',
-      location: 'Sutera Sports Center',
-      lastMessage: '“where are you guys right now??....”',
-      imageUrl:
-          'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=200',
-    ),
-    const CommunityData(
-      title: 'RUNNER CLUB',
-      members: '20 Members',
-      location: 'Flavor Bliss Alam Sutera',
-      lastMessage: '“Are we going to run right now??....”',
-      imageUrl:
-          'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=200',
-    ),
-  ];
+  final List<CommunityData> _communities = [];
+  bool _loaded = false;
+  bool loading = false;
+  String? error;
 
   List<CommunityData> get communities => List.unmodifiable(_communities);
 
+  /// READ — muat daftar komunitas dari API (sekali, kecuali force).
+  Future<void> load({bool force = false}) async {
+    if (_loaded && !force) return;
+    loading = true;
+    error = null;
+    notifyListeners();
+    try {
+      final res = await http
+          .get(Uri.parse('$apiBaseUrl/api/communities'))
+          .timeout(apiTimeout);
+      if (res.statusCode != 200) {
+        throw Exception('HTTP ${res.statusCode}');
+      }
+      final body = jsonDecode(res.body) as Map<String, dynamic>;
+      final list = (body['data'] as List)
+          .cast<Map<String, dynamic>>()
+          .map(CommunityData.fromJson)
+          .toList();
+      _communities
+        ..clear()
+        ..addAll(list);
+      _loaded = true;
+    } catch (e) {
+      error = e.toString();
+    } finally {
+      loading = false;
+      notifyListeners();
+    }
+  }
+
   bool exists(String title) => _communities.any((c) => c.title == title);
 
-  void add(CommunityData c) {
+  /// CREATE — tambah komunitas (POST). Fallback ke lokal bila API gagal.
+  Future<void> add(CommunityData c) async {
     if (exists(c.title)) return;
-    _communities.insert(0, c);
+    CommunityData toInsert = c;
+    try {
+      final res = await http
+          .post(
+            Uri.parse('$apiBaseUrl/api/communities'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(c.toJson()),
+          )
+          .timeout(apiTimeout);
+      if (res.statusCode == 201) {
+        final body = jsonDecode(res.body) as Map<String, dynamic>;
+        toInsert = CommunityData.fromJson(body['data'] as Map<String, dynamic>);
+      }
+    } catch (_) {
+      // Abaikan; pakai data lokal sebagai fallback.
+    }
+    _communities.insert(0, toInsert);
     notifyListeners();
   }
 
-  /// Dipanggil saat user join sebuah sesi — grup chatnya otomatis muncul
-  /// di daftar Sport Communities yang sudah di-join.
-  void addFromSession(SessionData s) {
+  /// Saat user join sesi — grup chatnya muncul di Sport Communities.
+  Future<void> addFromSession(SessionData s) async {
     if (exists(s.title)) return;
-    _communities.insert(
-      0,
+    await add(
       CommunityData(
         title: s.title,
         members: '1 Member',
@@ -73,7 +127,6 @@ class CommunityStore extends ChangeNotifier {
             : 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=200',
       ),
     );
-    notifyListeners();
   }
 }
 

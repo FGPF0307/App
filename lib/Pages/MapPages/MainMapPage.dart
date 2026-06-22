@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:fitarena/Pages/SessionPages/session_models.dart';
 import 'package:fitarena/Pages/SessionPages/JoinSessionPage.dart';
+import 'package:fitarena/services/session_api.dart';
 
 class MainMapScreen extends StatefulWidget {
   const MainMapScreen({super.key});
@@ -214,9 +215,20 @@ class _MainMapScreenState extends State<MainMapScreen> {
                         width: 50,
                         height: 50,
                         child: GestureDetector(
-                          onTap: () {
-                            // Saat pin diklik, detail sesi muncul
-                            _showSessionDetails(context, exploreSessions.first);
+                          onTap: () async {
+                            // Ambil sesi dari REST API; fallback ke data lokal
+                            // bila backend tidak aktif.
+                            SessionData session;
+                            try {
+                              final list = await SessionApi.fetchSessions();
+                              session = list.isNotEmpty
+                                  ? list.first
+                                  : exploreSessions.first;
+                            } catch (_) {
+                              session = exploreSessions.first;
+                            }
+                            if (!context.mounted) return;
+                            _showSessionDetails(context, session);
                           },
                           child: const Icon(
                             Icons.location_on, // Menggunakan pin merah standar map

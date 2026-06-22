@@ -6,6 +6,7 @@ import 'socialpage5.dart'; // Memastikan rute ke chatroom personal aktif
 import 'community_store.dart';
 import 'package:fitarena/Pages/SessionPages/session_models.dart';
 import 'package:fitarena/Pages/SessionPages/JoinSessionPage.dart';
+import 'package:fitarena/services/session_api.dart';
 
 class Socialpage1 extends StatefulWidget {
   const Socialpage1({Key? key}) : super(key: key);
@@ -18,6 +19,15 @@ class _Socialpage1State extends State<Socialpage1> {
   // Variabel warna tema
   static const Color creamBg = Color(0xFFE1DCD3);
   static const Color darkGreen = Color(0xFF043927);
+
+  late Future<List<SessionData>> _sessionsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _sessionsFuture = SessionApi.fetchSessions();
+    CommunityStore.instance.load();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,18 +139,49 @@ class _Socialpage1State extends State<Socialpage1> {
               // ==========================================
               _buildSectionTitle('ACTIVE SESSION HUB'),
               const SizedBox(height: 10),
-              // Data disamakan dengan Explore All (exploreSessions). JOIN
-              // membawa ke halaman detail "Join This Session".
-              for (final s in exploreSessions)
-                _buildActiveSessionCard(
-                  session: s,
-                  onJoin: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => JoinSessionPage(session: s),
-                    ),
-                  ),
-                ),
+              // Data diambil dari REST API (backend). JOIN membawa ke halaman
+              // detail "Join This Session".
+              FutureBuilder<List<SessionData>>(
+                future: _sessionsFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 24),
+                      child: Center(
+                        child: CircularProgressIndicator(color: darkGreen),
+                      ),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return _buildHubError();
+                  }
+                  final sessions = snapshot.data ?? const <SessionData>[];
+                  if (sessions.isEmpty) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Text(
+                        'Belum ada sesi aktif.',
+                        style:
+                            TextStyle(fontFamily: 'JetBrainsMono', fontSize: 12),
+                      ),
+                    );
+                  }
+                  return Column(
+                    children: [
+                      for (final s in sessions)
+                        _buildActiveSessionCard(
+                          session: s,
+                          onJoin: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => JoinSessionPage(session: s),
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
+              ),
 
               const SizedBox(height: 24),
 
@@ -163,9 +204,28 @@ class _Socialpage1State extends State<Socialpage1> {
               AnimatedBuilder(
                 animation: CommunityStore.instance,
                 builder: (context, _) {
+                  final store = CommunityStore.instance;
+                  if (store.loading && store.communities.isEmpty) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 24),
+                      child: Center(
+                        child: CircularProgressIndicator(color: darkGreen),
+                      ),
+                    );
+                  }
+                  if (store.communities.isEmpty) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Text(
+                        'Belum ada komunitas.',
+                        style:
+                            TextStyle(fontFamily: 'JetBrainsMono', fontSize: 12),
+                      ),
+                    );
+                  }
                   return Column(
                     children: [
-                      for (final c in CommunityStore.instance.communities)
+                      for (final c in store.communities)
                         _buildCommunityChatCard(
                           community: c,
                           onOpenChat: () => Navigator.push(
@@ -305,6 +365,39 @@ class _Socialpage1State extends State<Socialpage1> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHubError() {
+    return Container(
+      width: double.infinity,
+      color: Colors.white,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          const Text(
+            'Gagal memuat sesi dari server.',
+            style: TextStyle(fontFamily: 'JetBrainsMono', fontSize: 12),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Jalankan backend: cd backend → npm run dev',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontFamily: 'JetBrainsMono', fontSize: 10, color: Colors.black54),
+          ),
+          const SizedBox(height: 8),
+          GestureDetector(
+            onTap: () =>
+                setState(() => _sessionsFuture = SessionApi.fetchSessions()),
+            child: const Text(
+              'RETRY',
+              style: TextStyle(
+                  fontFamily: 'BebasNeue', fontSize: 18, color: darkGreen),
             ),
           ),
         ],

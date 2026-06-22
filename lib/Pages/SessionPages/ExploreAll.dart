@@ -1,18 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:fitarena/Pages/SessionPages/session_models.dart';
 import 'package:fitarena/Pages/SessionPages/secure_spot_sheet.dart';
+import 'package:fitarena/services/session_api.dart';
 
-class ExploreAllTab extends StatelessWidget {
+class ExploreAllTab extends StatefulWidget {
   const ExploreAllTab({super.key});
 
   @override
+  State<ExploreAllTab> createState() => _ExploreAllTabState();
+}
+
+class _ExploreAllTabState extends State<ExploreAllTab> {
+  late Future<List<SessionData>> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = SessionApi.fetchSessions();
+  }
+
+  void _reload() {
+    setState(() => _future = SessionApi.fetchSessions());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16.0),
-      children: [
-        for (final session in exploreSessions)
-          _buildExploreCard(context, session),
-      ],
+    return FutureBuilder<List<SessionData>>(
+      future: _future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(color: Color(0xFF00342B)),
+          );
+        }
+        if (snapshot.hasError) {
+          return _ErrorView(
+            message: snapshot.error.toString(),
+            onRetry: _reload,
+          );
+        }
+        final sessions = snapshot.data ?? const <SessionData>[];
+        if (sessions.isEmpty) {
+          return _EmptyView(onRefresh: _reload);
+        }
+        return RefreshIndicator(
+          onRefresh: () async => _reload(),
+          child: ListView(
+            padding: const EdgeInsets.all(16.0),
+            children: [
+              for (final session in sessions) _buildExploreCard(context, session),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -114,6 +154,104 @@ class ExploreAllTab extends StatelessWidget {
                   ],
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Tampilan saat gagal memuat dari API (mis. backend belum jalan).
+class _ErrorView extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+  const _ErrorView({required this.message, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.cloud_off, size: 48, color: Colors.black45),
+            const SizedBox(height: 12),
+            const Text(
+              'Gagal memuat sesi',
+              style: TextStyle(fontFamily: 'BebasNeue', fontSize: 24),
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'Pastikan backend berjalan:\ncd backend  →  npm run dev',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'JetBrainsMono',
+                fontSize: 12,
+                color: Colors.black54,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontFamily: 'JetBrainsMono',
+                fontSize: 10,
+                color: Colors.black38,
+              ),
+            ),
+            const SizedBox(height: 16),
+            GestureDetector(
+              onTap: onRetry,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+                color: const Color(0xFF111111),
+                child: const Text(
+                  'RETRY',
+                  style: TextStyle(
+                    fontFamily: 'BebasNeue',
+                    color: Color(0xFFCFE99F),
+                    fontSize: 20,
+                    letterSpacing: 1.0,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptyView extends StatelessWidget {
+  final VoidCallback onRefresh;
+  const _EmptyView({required this.onRefresh});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text(
+            'Belum ada sesi.',
+            style: TextStyle(fontFamily: 'JetBrainsMono', fontSize: 14),
+          ),
+          const SizedBox(height: 12),
+          GestureDetector(
+            onTap: onRefresh,
+            child: const Text(
+              'Muat ulang',
+              style: TextStyle(
+                fontFamily: 'JetBrainsMono',
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+                decoration: TextDecoration.underline,
+              ),
             ),
           ),
         ],

@@ -47,6 +47,12 @@ class _Socialpage2State extends State<Socialpage2> {
     },
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    CommunityStore.instance.load();
+  }
+
   Future<void> _pickImage(StateSetter dialogState) async {
     try {
       final pickedFile = await _picker.pickImage(
@@ -270,7 +276,14 @@ class _Socialpage2State extends State<Socialpage2> {
                         color: Colors.black54),
                   ),
                   const SizedBox(height: 10),
-                  if (joined.isEmpty)
+                  if (CommunityStore.instance.loading && joined.isEmpty)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 24),
+                      child: Center(
+                        child: CircularProgressIndicator(color: darkGreen),
+                      ),
+                    )
+                  else if (joined.isEmpty)
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 20),
                       child: Text("You haven't joined any squads yet.",

@@ -1,0 +1,8 @@
+[
+  { "id": "rwd_nike", "name": "NIKE -20% OFF\nRUNNING SHOES", "cost": 100000, "category": "voucher" },
+  { "id": "rwd_adidas", "name": "ADIDAS -10% OFF\nRUNNING SHOES", "cost": 100000, "category": "voucher" },
+  { "id": "rwd_puma", "name": "PUMA -5% OFF\nRUNNING SHOES", "cost": 100000, "category": "voucher" },
+  { "id": "rwd_milk", "name": "MILK\n(100 ML)", "cost": 20000, "category": "nutrition" },
+  { "id": "rwd_isotonic", "name": "ISOTONIC DRINK\n(500 ML)", "cost": 35000, "category": "nutrition" },
+  { "id": "rwd_water", "name": "MINERAL WATER\n(500 ML)", "cost": 10000, "category": "nutrition" }
+]

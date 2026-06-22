@@ -1,0 +1,18 @@
+[
+  {
+    "id": "com_basket_sweat",
+    "title": "BASKET SWEAT CLUB",
+    "members": "20 Members",
+    "location": "Sutera Sports Center",
+    "lastMessage": "“where are you guys right now??....”",
+    "imageUrl": "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=200"
+  },
+  {
+    "id": "com_runner_club",
+    "title": "RUNNER CLUB",
+    "members": "20 Members",
+    "location": "Flavor Bliss Alam Sutera",
+    "lastMessage": "“Are we going to run right now??....”",
+    "imageUrl": "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=200"
+  }
+]

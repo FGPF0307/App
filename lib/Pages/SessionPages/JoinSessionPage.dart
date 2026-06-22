@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fitarena/Pages/SessionPages/session_models.dart';
 import 'package:fitarena/Pages/SocialPages/community_store.dart';
+import 'package:fitarena/services/session_api.dart';
 
 /// Halaman detail "Join This Session" (layar penuh).
 class JoinSessionPage extends StatelessWidget {
@@ -25,6 +26,12 @@ class JoinSessionPage extends StatelessWidget {
     SessionStore.instance.join(session);
     // Grup chat sesi ini ikut muncul di Sport Communities.
     CommunityStore.instance.addFromSession(session);
+
+    // UPDATE spots di backend (best-effort, hanya untuk sesi yang berasal dari API).
+    final id = session.id;
+    if (id != null) {
+      SessionApi.joinSession(id).catchError((_) => session);
+    }
 
     final messenger = ScaffoldMessenger.of(context);
     Navigator.of(context).pop(); // kembali ke Session page
