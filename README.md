@@ -1,16 +1,6 @@
-# FitArena
+#Contributors Commit Changes
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+FGPF0307 as Farrel Ganendra Putra Fadia - 2802499150
+Ritadolo as Aldinh Muhammad Hutawardana - 2802505815
+rynsstuff as Rayyan Irfanshah - 2802503021
+RaphaelKaloh as Raphael Timothy Marice - 2802510954
