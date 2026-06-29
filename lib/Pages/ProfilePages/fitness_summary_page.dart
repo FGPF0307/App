@@ -1,7 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:fitarena/services/profile_service.dart';
 
-class FitnessSummaryPage extends StatelessWidget {
+class FitnessSummaryPage extends StatefulWidget {
   const FitnessSummaryPage({super.key});
+
+  @override
+  State<FitnessSummaryPage> createState() => _FitnessSummaryPageState();
+}
+
+class _FitnessSummaryPageState extends State<FitnessSummaryPage> {
+  ProfileData _data = ProfileData.fallback('ATHLETE');
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final data = await ProfileService.fetchMyProfile();
+    if (!mounted) return;
+    setState(() => _data = data);
+  }
+
+  String _fmt(int n) => n.toString().replaceAllMapped(
+        RegExp(r'(\d)(?=(\d{3})+$)'),
+        (m) => '${m[1]},',
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +39,7 @@ class FitnessSummaryPage extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 20),
-          onPressed: () => Navigator.pop(context), // <--- UBAH JADI onPressed
+          onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           'YOUR FITNESS\nSUMMARY',
@@ -28,7 +53,8 @@ class FitnessSummaryPage extends StatelessWidget {
               decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Colors.black, width: 2)),
               child: const CircleAvatar(
                 radius: 20,
-                backgroundImage: NetworkImage('https://via.placeholder.com/150'), // Ganti dengan foto profil
+                backgroundColor: Colors.grey,
+                child: Icon(Icons.person, color: Colors.white, size: 22),
               ),
             ),
           )
@@ -40,7 +66,7 @@ class FitnessSummaryPage extends StatelessWidget {
           children: [
             _buildStatCard(
               icon: Icons.stars,
-              value: '2,450',
+              value: _fmt(_data.pointsTotal),
               label: 'POINTS',
               desc: 'Stack rewards by hosting and joining active sessions.',
               bgColor: Colors.white,
@@ -49,7 +75,7 @@ class FitnessSummaryPage extends StatelessWidget {
             const SizedBox(height: 20),
             _buildStatCard(
               icon: Icons.timer,
-              value: '1,200',
+              value: _fmt(_data.minutesTraining),
               label: 'MINUTES',
               desc: 'Time spent moving, connecting and dominating.',
               bgColor: const Color(0xFF5A6A3A), // Hijau Olive
@@ -58,7 +84,7 @@ class FitnessSummaryPage extends StatelessWidget {
             const SizedBox(height: 20),
             _buildStatCard(
               icon: Icons.calendar_today_outlined,
-              value: '07 DAYS',
+              value: '${_data.effectiveStreak.toString().padLeft(2, '0')} DAYS',
               label: 'STREAK',
               desc: 'Maintain the momentum. Attend your next session to unlock elite tier status.',
               bgColor: const Color(0xFF333333), // Dark Grey
@@ -99,7 +125,7 @@ class FitnessSummaryPage extends StatelessWidget {
             style: TextStyle(fontFamily: 'BebasNeue', fontSize: 18, color: textColor, letterSpacing: 1.0),
           ),
           const SizedBox(height: 16),
-          Divider(color: textColor.withOpacity(0.5), thickness: 1),
+          Divider(color: textColor.withValues(alpha: 0.5), thickness: 1),
           const SizedBox(height: 16),
           Text(
             desc,

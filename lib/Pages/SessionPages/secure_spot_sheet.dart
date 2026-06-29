@@ -1,10 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fitarena/Pages/SessionPages/session_models.dart';
-import 'package:fitarena/Pages/SessionPages/JoinSessionPage.dart';
+import 'package:fitarena/Pages/SessionPages/session_join.dart';
+import 'package:fitarena/Pages/SessionPages/join_session_page.dart';
 
 /// Menampilkan bottom sheet "Secure My Spot" yang muncul menggeser dari bawah.
-/// Tombol "Secure My Spot" / "View Details" akan membuka halaman
-/// [JoinSessionPage].
+/// - "Secure My Spot" langsung menyimpan sesi ke My Schedule (+ XP).
+/// - "View Details" membuka halaman [JoinSessionPage].
 Future<void> showSecureSpotSheet(BuildContext context, SessionData session) {
   return showModalBottomSheet(
     context: context,
@@ -18,7 +20,18 @@ Future<void> showSecureSpotSheet(BuildContext context, SessionData session) {
         );
       }
 
-      return _SecureSpotSheet(session: session, onOpenDetail: openDetail);
+      void secureSpot() {
+        Navigator.of(sheetContext).pop(); // tutup sheet
+        // Simpan ke My Schedule (+ XP). Halaman Session otomatis pindah
+        // ke tab My Schedule karena daftarnya bertambah.
+        unawaited(performJoinFlow(context, session));
+      }
+
+      return _SecureSpotSheet(
+        session: session,
+        onOpenDetail: openDetail,
+        onSecure: secureSpot,
+      );
     },
   );
 }
@@ -26,8 +39,13 @@ Future<void> showSecureSpotSheet(BuildContext context, SessionData session) {
 class _SecureSpotSheet extends StatelessWidget {
   final SessionData session;
   final VoidCallback onOpenDetail;
+  final VoidCallback onSecure;
 
-  const _SecureSpotSheet({required this.session, required this.onOpenDetail});
+  const _SecureSpotSheet({
+    required this.session,
+    required this.onOpenDetail,
+    required this.onSecure,
+  });
 
   static const Color _darkGreen = Color(0xFF00342B);
   static const Color _olive = Color(0xFF8A7A1F);
@@ -48,7 +66,6 @@ class _SecureSpotSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Grab handle
           Center(
             child: Container(
               width: 44,
@@ -61,7 +78,6 @@ class _SecureSpotSheet extends StatelessWidget {
             ),
           ),
 
-          // ── BARIS HOST + VIEW DETAILS ──
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -117,7 +133,6 @@ class _SecureSpotSheet extends StatelessWidget {
           ),
           const SizedBox(height: 22),
 
-          // ── JUDUL & WAKTU ──
           Text(
             session.title,
             style: const TextStyle(
@@ -138,7 +153,6 @@ class _SecureSpotSheet extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          // ── BOX SPOTS FILLED ──
           _infoBox(
             accent: _darkGreen,
             child: Column(
@@ -170,7 +184,6 @@ class _SecureSpotSheet extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // ── BOX REWARD & ACHIEVEMENTS ──
           _infoBox(
             accent: _olive,
             child: Column(
@@ -210,9 +223,8 @@ class _SecureSpotSheet extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          // ── TOMBOL SECURE MY SPOT ──
           GestureDetector(
-            onTap: onOpenDetail,
+            onTap: onSecure,
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 22),

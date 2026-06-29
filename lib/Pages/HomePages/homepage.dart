@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:fitarena/Pages/SessionPages/JoinSessionPage.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:fitarena/Pages/SessionPages/join_session_page.dart';
 import 'package:fitarena/Pages/SessionPages/session_models.dart';
+import 'package:fitarena/services/profile_service.dart';
+
+/// Nama user yang sedang login (dari metadata akun Supabase).
+String currentUserName() {
+  final n = Supabase.instance.client.auth.currentUser?.userMetadata?['full_name']
+      as String?;
+  return (n == null || n.trim().isEmpty) ? 'ATHLETE' : n.trim().toUpperCase();
+}
+
+/// Format angka dengan pemisah ribuan (12000 -> "12,000").
+String _fmtNum(int n) => n.toString().replaceAllMapped(
+      RegExp(r'(\d)(?=(\d{3})+$)'),
+      (m) => '${m[1]},',
+    );
 
 class FitnessDashboardPage extends StatelessWidget {
   const FitnessDashboardPage({super.key});
 
-  // Helper untuk membuat dekorasi bergaya Neo-Brutalism (Border Tebal + Hard Shadow)
   BoxDecoration _brutalistDecoration({Color color = Colors.white}) {
     return BoxDecoration(
       color: color,
@@ -21,7 +35,6 @@ class FitnessDashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Menyesuaikan warna background lembut dari mockup figma kamu
     const scaffoldBgColor = Color(0xFFE1DCD3);
 
     return Scaffold(
@@ -32,17 +45,15 @@ class FitnessDashboardPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ============================================================
               // 1. HEADER: USER PROFILE & LEVEL PROGRESS
-              // ============================================================
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
+                    children: [
+                      const Text(
                         'HELLO,',
                         style: TextStyle(
                           fontFamily: 'BebasNeue',
@@ -52,8 +63,8 @@ class FitnessDashboardPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'JOHN GREENJIM',
-                        style: TextStyle(
+                        currentUserName(),
+                        style: const TextStyle(
                           fontFamily: 'BebasNeue',
                           fontSize: 36,
                           height: 1.0,
@@ -62,7 +73,6 @@ class FitnessDashboardPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // Foto Profil Melingkar dengan Border Hitam
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -78,66 +88,63 @@ class FitnessDashboardPage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
 
-              // KOTAK PROGRESS LEVEL
+              // KOTAK PROGRESS LEVEL (dinamis dari profil Supabase)
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: _brutalistDecoration(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text(
-                          'Level 24 : Kinetic',
-                          style: TextStyle(
-                            fontFamily: 'JetBrainsMono',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: Color(0xFF1A3F39),
-                          ),
+                child: AnimatedBuilder(
+                  animation: ProfileStore.instance,
+                  builder: (context, _) {
+                    final p = ProfileStore.instance.data;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Level ${p.level} : ${p.title}',
+                              style: const TextStyle(
+                                fontFamily: 'JetBrainsMono',
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: Color(0xFF1A3F39),
+                              ),
+                            ),
+                            Text(
+                              '${_fmtNum(p.currentXp)} / ${_fmtNum(p.xpToNext)}',
+                              style: const TextStyle(
+                                fontFamily: 'JetBrainsMono',
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          '12,000 / 40,000',
-                          style: TextStyle(
-                            fontFamily: 'JetBrainsMono',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                        const SizedBox(height: 12),
+                        Container(
+                          width: double.infinity,
+                          height: 20,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.black, width: 2),
+                          ),
+                          child: FractionallySizedBox(
+                            alignment: Alignment.centerLeft,
+                            widthFactor: p.xpFraction,
+                            heightFactor: 1,
+                            child: Container(color: const Color(0xFFC3E29E)),
                           ),
                         ),
                       ],
-                    ),
-                    const SizedBox(height: 12),
-                    // Progress Bar Kustom
-                    Container(
-                      width: double.infinity,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.black, width: 2),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 12000,
-                            child: Container(color: const Color(0xFFC3E29E)), // Warna hijau bar figma
-                          ),
-                          Expanded(
-                            flex: 28000,
-                            child: Container(color: Colors.transparent),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: 30),
 
-              // ============================================================
               // 2. CARD: UPCOMING TASK (RUNNING)
-              // ============================================================
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
@@ -145,7 +152,6 @@ class FitnessDashboardPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Badge Hitam Tulisan Putih
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                       color: Colors.black,
@@ -170,7 +176,6 @@ class FitnessDashboardPage extends StatelessWidget {
                       style: TextStyle(fontFamily: 'JetBrainsMono', fontSize: 13, color: Colors.black87),
                     ),
                     const SizedBox(height: 16),
-                    // Row Stats Info
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -181,7 +186,6 @@ class FitnessDashboardPage extends StatelessWidget {
                     const SizedBox(height: 12),
                     Center(child: _buildTaskStat('BONUS', '500 XP')),
                     const SizedBox(height: 20),
-                    // Tombol Check-in Now
                     GestureDetector(
                       onTap: () => Navigator.push(
                         context,
@@ -211,9 +215,7 @@ class FitnessDashboardPage extends StatelessWidget {
               ),
               const SizedBox(height: 30),
 
-              // ============================================================
               // 3. CARD: ACTIVE SESSION (BASKETBALL)
-              // ============================================================
               const Text(
                 'ACTIVE SESSION',
                 style: TextStyle(fontFamily: 'BebasNeue', fontSize: 22, letterSpacing: 1.0),
@@ -225,7 +227,6 @@ class FitnessDashboardPage extends StatelessWidget {
                 decoration: _brutalistDecoration(),
                 child: Column(
                   children: [
-                    // Gambar Bola Basket (Menggunakan Icon besar sebagai representasi mockup)
                     const Icon(Icons.sports_basketball, size: 100, color: Colors.orange),
                     const SizedBox(height: 16),
                     const Text(
@@ -237,7 +238,6 @@ class FitnessDashboardPage extends StatelessWidget {
                       style: TextStyle(fontFamily: 'JetBrainsMono', fontSize: 13, color: Colors.grey),
                     ),
                     const SizedBox(height: 16),
-                    // Bar Data Abu-abu dengan pembatas hitam
                     Container(
                       decoration: BoxDecoration(
                         color: const Color(0xFFD9D9D9),
@@ -252,7 +252,6 @@ class FitnessDashboardPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    // Tombol View Details (Model Border Outline)
                     GestureDetector(
                       onTap: () => Navigator.push(
                         context,
@@ -283,29 +282,40 @@ class FitnessDashboardPage extends StatelessWidget {
               ),
               const SizedBox(height: 30),
 
-              // ============================================================
               // 4. GRID SECTIONS: FITNESS SCORECARD
-              // ============================================================
               const Text(
                 'FITNESS SCORECARD',
                 style: TextStyle(fontFamily: 'BebasNeue', fontSize: 22, letterSpacing: 1.0),
               ),
               const SizedBox(height: 10),
-              // Baris pertama Scorecard (Kiri & Kanan)
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildScorecardCard(Icons.star_border, 'Points Earned', '2,450 pts'),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _buildScorecardCard(Icons.access_time, 'Workout Mins', '1,240 mins'),
-                  ),
-                ],
+              // Scorecard dinamis dari profil (poin, menit, streak).
+              AnimatedBuilder(
+                animation: ProfileStore.instance,
+                builder: (context, _) {
+                  final p = ProfileStore.instance.data;
+                  return Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildScorecardCard(Icons.star_border,
+                                'Points Earned', '${_fmtNum(p.pointsTotal)} pts'),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: _buildScorecardCard(Icons.access_time,
+                                'Workout Mins', '${_fmtNum(p.minutesTraining)} mins'),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      _buildScorecardCard(Icons.calendar_today_outlined,
+                          'Active Streak', '${p.effectiveStreak} Days',
+                          isFullWidth: true),
+                    ],
+                  );
+                },
               ),
-              const SizedBox(height: 16),
-              // Baris kedua Scorecard (Full Lebar Bawah)
-              _buildScorecardCard(Icons.calendar_today_outlined, 'Active Streak', '14 Days', isFullWidth: true),
               const SizedBox(height: 40),
             ],
           ),
@@ -314,7 +324,6 @@ class FitnessDashboardPage extends StatelessWidget {
     );
   }
 
-  // Widget Pembantu untuk Komponen Kecil Stats di Card Atas
   Widget _buildTaskStat(String label, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -326,7 +335,6 @@ class FitnessDashboardPage extends StatelessWidget {
     );
   }
 
-  // Widget Pembantu untuk Stats di dalam Kotak Abu-abu Active Session
   Widget _buildActiveSessionStat(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
@@ -339,7 +347,6 @@ class FitnessDashboardPage extends StatelessWidget {
     );
   }
 
-  // Widget Pembantu untuk Membuat Grid Kotak Skor Fitness
   Widget _buildScorecardCard(IconData icon, String title, String value, {bool isFullWidth = false}) {
     return Container(
       width: isFullWidth ? double.infinity : null,

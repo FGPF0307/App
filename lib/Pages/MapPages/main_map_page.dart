@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:fitarena/Pages/HomePages/homepage.dart' show currentUserName;
 import 'package:fitarena/Pages/SessionPages/session_models.dart';
-import 'package:fitarena/Pages/SessionPages/JoinSessionPage.dart';
+import 'package:fitarena/Pages/SessionPages/join_session_page.dart';
 import 'package:fitarena/services/session_api.dart';
 
 class MainMapScreen extends StatefulWidget {
@@ -17,7 +18,6 @@ class _MainMapScreenState extends State<MainMapScreen> {
   final LatLng _initialCenter = const LatLng(-6.2246, 106.6531);
   final MapController _mapController = MapController();
 
-  // ─── BOTTOM SHEET DETAIL SESI ───
   void _showSessionDetails(BuildContext context, SessionData session) {
     const Color darkCharcoal = Color(0xFF0F110F);
 
@@ -147,7 +147,6 @@ class _MainMapScreenState extends State<MainMapScreen> {
         bottom: false, // Membiarkan peta menyentuh batas bawah layar
         child: Column(
           children: [
-            // ─── BAGIAN 1: HEADER & SEARCH BAR KUSTOM ───
             Container(
               color: creamBg,
               padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
@@ -156,9 +155,9 @@ class _MainMapScreenState extends State<MainMapScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'HELLO,\nFARREL GANENDRA',
-                        style: TextStyle(fontFamily: 'BebasNeue', fontSize: 36, height: 0.9, color: darkCharcoal),
+                      Text(
+                        'HELLO,\n${currentUserName()}',
+                        style: const TextStyle(fontFamily: 'BebasNeue', fontSize: 36, height: 0.9, color: darkCharcoal),
                       ),
                       const CircleAvatar(
                         radius: 36,
@@ -169,7 +168,6 @@ class _MainMapScreenState extends State<MainMapScreen> {
                   ),
                   const SizedBox(height: 24),
                   
-                  // Kotak Pencarian (Search Bar) Putih Polos
                   Container(
                     height: 40,
                     width: double.infinity,
@@ -190,7 +188,6 @@ class _MainMapScreenState extends State<MainMapScreen> {
               ),
             ),
 
-            // ─── BAGIAN 2: MESIN PETA OPENSTREETMAP ───
             Expanded(
               child: FlutterMap(
                 mapController: _mapController,
@@ -207,7 +204,6 @@ class _MainMapScreenState extends State<MainMapScreen> {
                     userAgentPackageName: 'com.fitarena.app',
                   ),
                   
-                  // Titik Lokasi
                   MarkerLayer(
                     markers: [
                       Marker(

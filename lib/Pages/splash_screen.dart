@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fitarena/widgets/fitarena_logo.dart';
-import 'package:fitarena/Pages/LandingPages/LandingPage1.dart';
+import 'package:fitarena/Pages/LandingPages/landing_page1.dart';
 
 /// Splash screen yang tampil saat app dibuka. Pindah ke Landing Page 1
 /// saat layar di-tap (bukan otomatis).

@@ -1,17 +1,17 @@
 import 'dart:io'; // Digunakan untuk memuat berkas lokal via File()
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'socialpage4.dart';
+import 'chat_room_page.dart';
 import 'community_store.dart';
 
-class Socialpage2 extends StatefulWidget {
-  const Socialpage2({Key? key}) : super(key: key);
+class CommunitiesPage extends StatefulWidget {
+  const CommunitiesPage({super.key});
 
   @override
-  State<Socialpage2> createState() => _Socialpage2State();
+  State<CommunitiesPage> createState() => _CommunitiesPageState();
 }
 
-class _Socialpage2State extends State<Socialpage2> {
+class _CommunitiesPageState extends State<CommunitiesPage> {
   static const Color creamBg = Color(0xFFE2E1D6);
   static const Color darkGreen = Color(0xFF043927);
 
@@ -300,8 +300,7 @@ class _Socialpage2State extends State<Socialpage2> {
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const Socialpage4(),
-                              settings: RouteSettings(arguments: c),
+                              builder: (_) => ChatRoomPage.group(c),
                             ),
                           ),
                         )),

@@ -43,5 +43,21 @@
     "rewardPoints": 180,
     "xp": 280,
     "number": "03"
+  },
+  {
+    "id": "ses_mqzb1mpxmys8",
+    "title": "HALO",
+    "location": "binus alsut",
+    "day": "Today",
+    "startTime": "19.00",
+    "endTime": "21.00",
+    "image": "https://loremflickr.com/500/500/basketball?lock=8",
+    "host": "John Greenjim",
+    "spotsFilled": 1,
+    "spotsTotal": 6,
+    "rewardPoints": 200,
+    "xp": 300,
+    "number": "",
+    "createdAt": "2026-06-29T14:20:18.885Z"
   }
 ]

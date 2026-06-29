@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fitarena/Pages/SessionPages/ExploreAll.dart';
-import 'package:fitarena/Pages/SessionPages/HostSession.dart';
-import 'package:fitarena/Pages/SessionPages/JoinSessionPage.dart';
+import 'package:fitarena/Pages/SessionPages/explore_all.dart';
+import 'package:fitarena/Pages/SessionPages/host_session.dart';
+import 'package:fitarena/Pages/SessionPages/join_session_page.dart';
 import 'package:fitarena/Pages/SessionPages/session_models.dart';
 
 class SessionPage extends StatefulWidget {
@@ -49,7 +49,6 @@ class _SessionPageState extends State<SessionPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
             Padding(
               padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
               child: Column(
@@ -65,7 +64,6 @@ class _SessionPageState extends State<SessionPage>
                   ),
                   const SizedBox(height: 16),
 
-                  // Banner Live Now
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(
@@ -150,7 +148,6 @@ class _SessionPageState extends State<SessionPage>
             ),
             const SizedBox(height: 30),
 
-            // Tab Bar My Schedule & Explore All
             Container(
               decoration: const BoxDecoration(
                 border: Border(
@@ -179,7 +176,6 @@ class _SessionPageState extends State<SessionPage>
               ),
             ),
 
-            // TabBar View
             Expanded(
               child: TabBarView(
                 controller: _tabController,
@@ -196,7 +192,6 @@ class _SessionPageState extends State<SessionPage>
   }
 }
 
-// Widget My Schedule
 class MyScheduleTab extends StatelessWidget {
   const MyScheduleTab({super.key});
 

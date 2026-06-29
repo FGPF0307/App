@@ -1,7 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:fitarena/Pages/MainNavigation.dart';
+import 'package:fitarena/Pages/main_navigation.dart';
+import 'package:fitarena/Pages/SignUpandSigninPage/onboarding_page.dart';
+import 'package:fitarena/services/profile_service.dart';
 import 'package:fitarena/widgets/fitarena_logo.dart';
 
 final _supabase = Supabase.instance.client;
@@ -35,10 +37,15 @@ class _SignInPageState extends State<SignInPage> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+      // Pemain baru (belum onboarding) diarahkan ke halaman isi nama & preferensi.
+      final profile = await ProfileService.fetchMyProfile();
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const MainNavigation()),
+          MaterialPageRoute(
+            builder: (_) =>
+                profile.onboarded ? const MainNavigation() : const OnboardingPage(),
+          ),
           (route) => false,
         );
       }

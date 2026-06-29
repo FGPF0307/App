@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:fitarena/Pages/SessionPages/session_models.dart';
 import 'package:fitarena/services/session_api.dart';
+import 'package:fitarena/services/xp_api.dart';
+import 'package:fitarena/services/profile_service.dart';
 
-// =====================================================================
 // Palet warna bersama untuk seluruh alur Host Session
-// =====================================================================
 const Color _cream = Color(0xFFE1E2D6);
 const Color _darkGreen = Color(0xFF00342B);
 const Color _lightGreen = Color(0xFFCFE99F);
 const Color _black = Color(0xFF111111);
 
-// =====================================================================
 // LANGKAH 1 — PICK YOUR CATEGORY
-// =====================================================================
 class HostCategoryPage extends StatefulWidget {
   const HostCategoryPage({super.key});
 
@@ -102,9 +100,7 @@ class _HostCategoryPageState extends State<HostCategoryPage> {
   }
 }
 
-// =====================================================================
 // LANGKAH 2 — SELECT PHOTO
-// =====================================================================
 class HostPhotoPage extends StatefulWidget {
   final SportCategory category;
   const HostPhotoPage({super.key, required this.category});
@@ -202,9 +198,7 @@ class _HostPhotoPageState extends State<HostPhotoPage> {
   }
 }
 
-// =====================================================================
 // LANGKAH 3 — DETAIL SESSION (form)
-// =====================================================================
 class HostDetailsPage extends StatefulWidget {
   final String category;
   final String photoUrl;
@@ -319,6 +313,37 @@ class _HostDetailsPageState extends State<HostDetailsPage> {
         ),
       ),
     );
+
+    // Beri XP host (+150 dasar, dikali multiplier streak di backend).
+    final result = await XpApi.award(
+      action: 'host',
+      startHour: _startHour,
+      startMinute: _startMinute,
+      spotsFilled: newSession.spotsFilled,
+      spotsTotal: newSession.spotsTotal,
+      location: newSession.location,
+      rewardPoints: newSession.rewardPoints,
+      minutes: duration,
+    );
+    if (result != null && result.gainedXp > 0) {
+      final parts = <String>['+${result.gainedXp} XP'];
+      if (result.leveledUp) parts.add('LEVEL UP! (Lvl ${result.level})');
+      if (result.newBadges.isNotEmpty) {
+        parts.add('Badge baru: ${result.newBadges.join(', ')}');
+      }
+      messenger.showSnackBar(
+        SnackBar(
+          backgroundColor: const Color(0xFF9E6E38),
+          content: Text(
+            parts.join('  •  '),
+            style: const TextStyle(fontFamily: 'JetBrainsMono'),
+          ),
+        ),
+      );
+    }
+
+    // Segarkan profil agar Home & Profile menampilkan XP/stats terbaru.
+    await ProfileStore.instance.refresh();
   }
 
   @override
@@ -334,7 +359,6 @@ class _HostDetailsPageState extends State<HostDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Header
                     Row(
                       children: [
                         GestureDetector(
@@ -354,7 +378,6 @@ class _HostDetailsPageState extends State<HostDetailsPage> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Foto + kategori terpilih
                     SizedBox(
                       width: double.infinity,
                       height: 180,
@@ -392,7 +415,6 @@ class _HostDetailsPageState extends State<HostDetailsPage> {
                       ),
                     ),
 
-                    // Form
                     _buildLabel('Session Title'),
                     _buildTextField(controller: _titleController),
 
@@ -495,7 +517,6 @@ class _HostDetailsPageState extends State<HostDetailsPage> {
     );
   }
 
-  // ── Widget Date (spinner dd/mm/yyyy) ──
   Widget _buildDateSelector() {
     final maxDays = _getMaxDays(_selectedMonth, _selectedYear);
     return Container(
@@ -546,7 +567,6 @@ class _HostDetailsPageState extends State<HostDetailsPage> {
     );
   }
 
-  // ── Widget Start At (spinner HH:MM) ──
   Widget _buildTimeSelector() {
     return Container(
       width: double.infinity,
@@ -640,9 +660,7 @@ class _HostDetailsPageState extends State<HostDetailsPage> {
   }
 }
 
-// =====================================================================
 // Komponen bersama
-// =====================================================================
 
 /// Header "< HOST SESSION" + subjudul (PICK YOUR CATEGORY / SELECT PHOTO).
 class _HostHeader extends StatelessWidget {
@@ -732,10 +750,8 @@ class _StepButton extends StatelessWidget {
   }
 }
 
-/// Gambar jaringan yang otomatis mencoba ulang saat gagal (mis. LoremFlickr
-/// kadang balas 500). Memuat ulang URL yang sama beberapa kali sebelum
-/// menyerah dan menampilkan [placeholder]. Harus dipakai di dalam parent
-/// dengan ukuran pasti (mis. Stack berukuran tetap / StackFit.expand).
+/// Gambar jaringan dengan retry otomatis saat gagal memuat (perlu parent
+/// berukuran pasti, mis. di dalam Stack/StackFit.expand).
 class _RetryImage extends StatefulWidget {
   final String url;
   final Widget placeholder;

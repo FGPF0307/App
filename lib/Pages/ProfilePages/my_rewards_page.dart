@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fitarena/widgets/fit_dialog.dart';
 import 'package:fitarena/services/reward_api.dart';
+import 'package:fitarena/services/profile_service.dart';
 
 class MyRewardsPage extends StatefulWidget {
   const MyRewardsPage({super.key});
@@ -14,13 +15,20 @@ class _MyRewardsPageState extends State<MyRewardsPage> {
   static const Color green = Color(0xFFCFE99F);
   static const Color black = Color(0xFF111111);
 
-  int _points = 2450;
+  int _points = 0;
   late Future<List<RewardItem>> _future;
 
   @override
   void initState() {
     super.initState();
     _future = RewardApi.fetchRewards();
+    _loadPoints();
+  }
+
+  Future<void> _loadPoints() async {
+    final data = await ProfileService.fetchMyProfile();
+    if (!mounted) return;
+    setState(() => _points = data.pointsTotal);
   }
 
   void _reload() => setState(() => _future = RewardApi.fetchRewards());
@@ -104,12 +112,8 @@ class _MyRewardsPageState extends State<MyRewardsPage> {
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: Color(0xFFDCDDDB),
-                      image: DecorationImage(
-                        image: AssetImage(
-                            'assets/images/profile/JohnGreenjim.jpeg'),
-                        fit: BoxFit.cover,
-                      ),
                     ),
+                    child: const Icon(Icons.person, color: Colors.white, size: 30),
                   ),
                 ],
               ),

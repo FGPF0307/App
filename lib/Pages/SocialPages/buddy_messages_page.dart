@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'socialpage5.dart'; // Navigasi ke personal chatroom
+import 'chat_room_page.dart'; // Navigasi ke personal chatroom
 
-class Socialpage3 extends StatefulWidget {
-  const Socialpage3({Key? key}) : super(key: key);
+class BuddyMessagesPage extends StatefulWidget {
+  const BuddyMessagesPage({super.key});
 
   @override
-  State<Socialpage3> createState() => _Socialpage3State();
+  State<BuddyMessagesPage> createState() => _BuddyMessagesPageState();
 }
 
-class _Socialpage3State extends State<Socialpage3> {
-  // Warna latar belakang khas sesuai gambar Figma
+class _BuddyMessagesPageState extends State<BuddyMessagesPage> {
   static const Color figmaBg = Color(0xFFE2E1D6); 
 
   @override
@@ -22,9 +21,7 @@ class _Socialpage3State extends State<Socialpage3> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ==========================================
               // HEADER: < BUDDY MESSAGES
-              // ==========================================
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -54,9 +51,7 @@ class _Socialpage3State extends State<Socialpage3> {
               ),
               const SizedBox(height: 24),
 
-              // ==========================================
               // SEARCH BAR (KOTAK PUTIH MINIMALIS)
-              // ==========================================
               Container(
                 height: 48,
                 decoration: const BoxDecoration(
@@ -81,9 +76,7 @@ class _Socialpage3State extends State<Socialpage3> {
               ),
               const SizedBox(height: 24),
 
-              // ==========================================
               // SECTION: ADD NEW FRIENDS
-              // ==========================================
               const Text(
                 'Add new friends',
                 style: TextStyle(
@@ -108,9 +101,7 @@ class _Socialpage3State extends State<Socialpage3> {
               ),
               const SizedBox(height: 28),
 
-              // ==========================================
               // SECTION: CHATS
-              // ==========================================
               const Text(
                 'Chats',
                 style: TextStyle(
@@ -122,7 +113,6 @@ class _Socialpage3State extends State<Socialpage3> {
               ),
               const SizedBox(height: 12),
 
-              // Daftar Chat Utama
               _buildFigmaChatTile(
                 name: 'RAKA ARKADIAN',
                 level: 'LVL.15',
@@ -154,18 +144,15 @@ class _Socialpage3State extends State<Socialpage3> {
     );
   }
 
-  // Fungsi pembantu navigasi estafet tanpa menggunakan `const` pada target class
   void _navigateToChat(BuildContext context, String name) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Socialpage5(),
-        settings: RouteSettings(arguments: name),
+        builder: (context) => ChatRoomPage.personal(name),
       ),
     );
   }
 
-  // Helper: Grid Avatar Kotak untuk "Add new friends"
   Widget _buildFriendAvatar(String imageUrl) {
     return Container(
       margin: const EdgeInsets.only(right: 12),
@@ -186,7 +173,6 @@ class _Socialpage3State extends State<Socialpage3> {
     );
   }
 
-  // Helper: List Item Chat beserta pembatas garis hitam tipis bawahnya
   Widget _buildFigmaChatTile({
     required String name,
     required String level,
@@ -204,7 +190,6 @@ class _Socialpage3State extends State<Socialpage3> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Foto profil kotak rounded
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
@@ -218,7 +203,6 @@ class _Socialpage3State extends State<Socialpage3> {
                 ),
                 const SizedBox(width: 14),
                 
-                // Area Informasi Chat
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,7 +258,6 @@ class _Socialpage3State extends State<Socialpage3> {
               ],
             ),
           ),
-          // Garis pemisah hitam tipis di setiap bawah chat tile sesuai gambar figma
           const Divider(
             color: Colors.black87,
             height: 1,

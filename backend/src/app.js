@@ -5,6 +5,7 @@ const cors = require('cors');
 const sessionRoutes = require('./routes/session.routes');
 const communityRoutes = require('./routes/community.routes');
 const rewardRoutes = require('./routes/reward.routes');
+const profileRoutes = require('./routes/profile.routes');
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
       '/api/sessions',
       '/api/communities',
       '/api/rewards',
+      '/api/profiles',
     ],
   });
 });
@@ -37,6 +39,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/sessions', sessionRoutes);
 app.use('/api/communities', communityRoutes);
 app.use('/api/rewards', rewardRoutes);
+app.use('/api/profiles', profileRoutes);
 
 // 404 + error handler (harus paling bawah)
 app.use(notFound);
