@@ -1,7 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:fitarena/services/profile_service.dart';
 
-class LevelEvolutionPage extends StatelessWidget {
+/// Definisi satu tingkatan (tier) evolusi level.
+class _Tier {
+  final int lo;
+  final int hi;
+  final String title;
+  final List<String> tags;
+  final Color bgColor;
+  const _Tier(this.lo, this.hi, this.title, this.tags, this.bgColor);
+}
+
+// 10 tier kasta sesuai spesifikasi (Level 1-99).
+const List<_Tier> _tiers = [
+  _Tier(1, 10, 'SPARK', ['NEW JOINER', 'ENDURANCE BASE'], Color(0xFF5A6676)),
+  _Tier(11, 20, 'HABIT BUILDER', ['CONSISTENCY', 'RECOVERY CYCLE'], Color(0xFF48566E)),
+  _Tier(21, 30, 'KINETIC', ['POWER OUTPUT', 'DYNAMIC SPEED'], Color(0xFF273E95)),
+  _Tier(31, 40, 'IRON CORE', ['MENTAL FORTITUDE', 'LOAD CAPACITY'], Color(0xFF1D2C76)),
+  _Tier(41, 50, 'ELITE STRIDER', ['LOCAL DRIVER', 'STAMINA PEAK'], Color(0xFF65753E)),
+  _Tier(51, 60, 'APEX', ['CITY TOP TIER', 'EXPLOSIVE FORCE'], Color(0xFF4A572D)),
+  _Tier(61, 70, 'VANGUARD', ['CLAN LEADER', 'ARENA DOMINANCE'], Color(0xFF8A5A20)),
+  _Tier(71, 80, 'INFINITE', ['ABOVE AVERAGE', 'MAX DURABILITY'], Color(0xFF7A3E10)),
+  _Tier(81, 90, 'OVERLORD', ['LOCAL LEGEND', 'REGION RULER'], Color(0xFF942828)),
+  _Tier(91, 99, 'ABSOLUTE MASTER', ['FITNESS DEITY', 'PUBLIC ICON'], Color(0xFF111111)),
+];
+
+class LevelEvolutionPage extends StatefulWidget {
   const LevelEvolutionPage({super.key});
+
+  @override
+  State<LevelEvolutionPage> createState() => _LevelEvolutionPageState();
+}
+
+class _LevelEvolutionPageState extends State<LevelEvolutionPage> {
+  int _level = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final data = await ProfileService.fetchMyProfile();
+    if (!mounted) return;
+    setState(() => _level = data.level);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,81 +54,35 @@ class LevelEvolutionPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: scaffoldBgColor,
       appBar: _buildCustomAppBar(context, 'LEVEL\nEVOLUTION'),
-      body: ListView(
+      body: ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        children: [
-          // LEVEL 0-9 (COMPLETED)
-          _buildTimelineStep(
-            status: '[ x ] COMPLETED',
-            levelRange: 'LVL 0-9',
-            title: 'SPARK',
-            tags: ['ENDURANCE BASE', 'MECHANICAL CORE'],
-            bgColor: const Color(0xFF5A6676), // Slate Grey
-            iconData: Icons.check,
-            isCompleted: true,
-          ),
-          // LEVEL 10-19 (COMPLETED)
-          _buildTimelineStep(
-            status: '[ x ] COMPLETED',
-            levelRange: 'LVL 10-19',
-            title: 'HABIT BUILDER',
-            tags: ['CONSISTENCY', 'RECOVERY CYCLE'],
-            bgColor: const Color(0xFF48566E), // Darker Slate
-            iconData: Icons.check,
-            isCompleted: true,
-          ),
-          // LEVEL 20-29 (ON PROGRESS)
-          _buildTimelineStep(
-            status: '[ ! ] ON PROGRESS',
-            levelRange: 'LVL 20-29',
-            title: 'KINETIC',
-            tags: ['POWER OUTPUT', 'DYNAMIC SPEED'],
-            bgColor: const Color(0xFF273E95), // Royal Blue
-            iconData: Icons.flash_on,
-            isCompleted: true, // Icon background is active
-          ),
-          // LEVEL 30-39 (LOCKED)
-          _buildTimelineStep(
-            status: '[ ] LOCKED',
-            levelRange: 'LVL 30-39',
-            title: 'IRON WILL',
-            tags: ['MENTAL FORTITUDE', 'LOAD CAPACITY'],
-            bgColor: const Color(0xFF1D2C76), // Dark Blue
-            iconData: Icons.lock,
-            isCompleted: false,
-          ),
-          // LEVEL 40-49 (LOCKED)
-          _buildTimelineStep(
-            status: '[ ] LOCKED',
-            levelRange: 'LVL 40-49',
-            title: 'CATALYST',
-            tags: ['STAMINA PEAK', 'METABOLIC DRIVE'],
-            bgColor: const Color(0xFF65753E), // Olive Green
-            iconData: Icons.lock,
-            isCompleted: false,
-          ),
-          // LEVEL 50-59 (LOCKED)
-          _buildTimelineStep(
-            status: '[ ] LOCKED',
-            levelRange: 'LVL 50-59',
-            title: 'VANGUARD',
-            tags: ['ARENA DOMINANCE', 'EXPLOSIVE FORCE'],
-            bgColor: const Color(0xFF4A572D), // Dark Olive
-            iconData: Icons.lock,
-            isCompleted: false,
-          ),
-          // LEVEL 60-69 (LOCKED)
-          _buildTimelineStep(
-            status: '[ ] LOCKED',
-            levelRange: 'LVL 60-69',
-            title: 'APEX RAIDER',
-            tags: ['TACTICAL', 'MAX POWER'],
-            bgColor: const Color(0xFF942828), // Red
-            iconData: Icons.lock,
-            isCompleted: false,
-            isLast: true, // Garis berhenti di sini (atau teruskan sesuai data)
-          ),
-        ],
+        itemCount: _tiers.length,
+        itemBuilder: (context, i) {
+          final t = _tiers[i];
+          // Status dihitung dari level user saat ini.
+          final bool completed = _level > t.hi;
+          final bool inProgress = _level >= t.lo && _level <= t.hi;
+          final String status = completed
+              ? '[ x ] COMPLETED'
+              : inProgress
+                  ? '[ ! ] ON PROGRESS'
+                  : '[ ] LOCKED';
+          final IconData icon = completed
+              ? Icons.check
+              : inProgress
+                  ? Icons.flash_on
+                  : Icons.lock;
+          return _buildTimelineStep(
+            status: status,
+            levelRange: 'LVL ${t.lo}-${t.hi}',
+            title: t.title,
+            tags: t.tags,
+            bgColor: t.bgColor,
+            iconData: icon,
+            isActive: completed || inProgress,
+            isLast: i == _tiers.length - 1,
+          );
+        },
       ),
     );
   }
@@ -97,7 +95,7 @@ class LevelEvolutionPage extends StatelessWidget {
     required List<String> tags,
     required Color bgColor,
     required IconData iconData,
-    required bool isCompleted,
+    required bool isActive,
     bool isLast = false,
   }) {
     // Warna teks berubah jadi lime green jika background terlalu gelap (seperti Titan/Absolute Master)
@@ -118,10 +116,10 @@ class LevelEvolutionPage extends StatelessWidget {
                   width: 24,
                   height: 24,
                   decoration: BoxDecoration(
-                    color: isCompleted ? const Color(0xFF5C6A79) : Colors.transparent, // Warna bundaran ikon
+                    color: isActive ? const Color(0xFF5C6A79) : Colors.transparent, // Warna bundaran ikon
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(iconData, size: 14, color: isCompleted ? Colors.white : Colors.black),
+                  child: Icon(iconData, size: 14, color: isActive ? Colors.white : Colors.black),
                 ),
                 Expanded(child: Container(width: 1.5, color: isLast ? Colors.transparent : Colors.black)), // Garis bawah
               ],
@@ -192,7 +190,7 @@ class LevelEvolutionPage extends StatelessWidget {
           padding: const EdgeInsets.only(right: 20.0),
           child: Container(
             decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Colors.black, width: 2)),
-            child: const CircleAvatar(radius: 20, backgroundImage: NetworkImage('https://via.placeholder.com/150')),
+            child: const CircleAvatar(radius: 20, backgroundColor: Colors.grey, child: Icon(Icons.person, color: Colors.white, size: 22)),
           ),
         )
       ],

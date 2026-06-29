@@ -1,7 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fitarena/Pages/SessionPages/session_models.dart';
-import 'package:fitarena/Pages/SocialPages/community_store.dart';
-import 'package:fitarena/services/session_api.dart';
+import 'package:fitarena/Pages/SessionPages/session_join.dart';
 
 /// Halaman detail "Join This Session" (layar penuh).
 class JoinSessionPage extends StatelessWidget {
@@ -22,30 +22,9 @@ class JoinSessionPage extends StatelessWidget {
   ];
 
   void _join(BuildContext context) {
-    final already = SessionStore.instance.isJoined(session);
-    SessionStore.instance.join(session);
-    // Grup chat sesi ini ikut muncul di Sport Communities.
-    CommunityStore.instance.addFromSession(session);
-
-    // UPDATE spots di backend (best-effort, hanya untuk sesi yang berasal dari API).
-    final id = session.id;
-    if (id != null) {
-      SessionApi.joinSession(id).catchError((_) => session);
-    }
-
-    final messenger = ScaffoldMessenger.of(context);
-    Navigator.of(context).pop(); // kembali ke Session page
-    messenger.showSnackBar(
-      SnackBar(
-        backgroundColor: _darkGreen,
-        content: Text(
-          already
-              ? 'Kamu sudah tergabung di sesi ini.'
-              : 'Berhasil join "${session.title}"! Cek My Schedule.',
-          style: const TextStyle(fontFamily: 'JetBrainsMono'),
-        ),
-      ),
-    );
+    // Simpan ke My Schedule (+ XP) lalu kembali ke halaman Session.
+    unawaited(performJoinFlow(context, session));
+    Navigator.of(context).pop();
   }
 
   @override

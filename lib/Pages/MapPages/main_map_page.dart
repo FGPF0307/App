@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:fitarena/Pages/HomePages/homepage.dart' show currentUserName;
 import 'package:fitarena/Pages/SessionPages/session_models.dart';
-import 'package:fitarena/Pages/SessionPages/JoinSessionPage.dart';
+import 'package:fitarena/Pages/SessionPages/join_session_page.dart';
 import 'package:fitarena/services/session_api.dart';
 
 class MainMapScreen extends StatefulWidget {
@@ -156,9 +157,9 @@ class _MainMapScreenState extends State<MainMapScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'HELLO,\nFARREL GANENDRA',
-                        style: TextStyle(fontFamily: 'BebasNeue', fontSize: 36, height: 0.9, color: darkCharcoal),
+                      Text(
+                        'HELLO,\n${currentUserName()}',
+                        style: const TextStyle(fontFamily: 'BebasNeue', fontSize: 36, height: 0.9, color: darkCharcoal),
                       ),
                       const CircleAvatar(
                         radius: 36,

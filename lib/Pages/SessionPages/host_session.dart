@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fitarena/Pages/SessionPages/session_models.dart';
 import 'package:fitarena/services/session_api.dart';
+import 'package:fitarena/services/xp_api.dart';
+import 'package:fitarena/services/profile_service.dart';
 
 // =====================================================================
 // Palet warna bersama untuk seluruh alur Host Session
@@ -319,6 +321,37 @@ class _HostDetailsPageState extends State<HostDetailsPage> {
         ),
       ),
     );
+
+    // Beri XP host (+150 dasar, dikali multiplier streak di backend).
+    final result = await XpApi.award(
+      action: 'host',
+      startHour: _startHour,
+      startMinute: _startMinute,
+      spotsFilled: newSession.spotsFilled,
+      spotsTotal: newSession.spotsTotal,
+      location: newSession.location,
+      rewardPoints: newSession.rewardPoints,
+      minutes: duration,
+    );
+    if (result != null && result.gainedXp > 0) {
+      final parts = <String>['+${result.gainedXp} XP'];
+      if (result.leveledUp) parts.add('LEVEL UP! (Lvl ${result.level})');
+      if (result.newBadges.isNotEmpty) {
+        parts.add('Badge baru: ${result.newBadges.join(', ')}');
+      }
+      messenger.showSnackBar(
+        SnackBar(
+          backgroundColor: const Color(0xFF9E6E38),
+          content: Text(
+            parts.join('  •  '),
+            style: const TextStyle(fontFamily: 'JetBrainsMono'),
+          ),
+        ),
+      );
+    }
+
+    // Segarkan profil agar Home & Profile menampilkan XP/stats terbaru.
+    await ProfileStore.instance.refresh();
   }
 
   @override

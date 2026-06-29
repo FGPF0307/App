@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'socialpage2.dart';
-import 'socialpage3.dart'; // Memastikan rute ke halaman daftar pesan aktif
-import 'socialpage4.dart'; // Group chatroom (Open Chat)
-import 'socialpage5.dart'; // Memastikan rute ke chatroom personal aktif
+import 'package:fitarena/Pages/HomePages/homepage.dart' show currentUserName;
+import 'communities_page.dart';
+import 'buddy_messages_page.dart';
+import 'chat_room_page.dart';
 import 'community_store.dart';
 import 'package:fitarena/Pages/SessionPages/session_models.dart';
-import 'package:fitarena/Pages/SessionPages/JoinSessionPage.dart';
+import 'package:fitarena/Pages/SessionPages/join_session_page.dart';
 import 'package:fitarena/services/session_api.dart';
 
-class Socialpage1 extends StatefulWidget {
-  const Socialpage1({Key? key}) : super(key: key);
+class SocialHubPage extends StatefulWidget {
+  const SocialHubPage({super.key});
 
   @override
-  State<Socialpage1> createState() => _Socialpage1State();
+  State<SocialHubPage> createState() => _SocialHubPageState();
 }
 
-class _Socialpage1State extends State<Socialpage1> {
+class _SocialHubPageState extends State<SocialHubPage> {
   // Variabel warna tema
   static const Color creamBg = Color(0xFFE1DCD3);
   static const Color darkGreen = Color(0xFF043927);
@@ -85,9 +85,9 @@ class _Socialpage1State extends State<Socialpage1> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      'JOHN GREENJIM',
-                      style: TextStyle(
+                    Text(
+                      currentUserName(),
+                      style: const TextStyle(
                         fontFamily: 'BebasNeue',
                         color: Colors.white,
                         fontSize: 32,
@@ -194,7 +194,7 @@ class _Socialpage1State extends State<Socialpage1> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const Socialpage2(),
+                      builder: (context) => const CommunitiesPage(),
                     ),
                   );
                 },
@@ -231,8 +231,7 @@ class _Socialpage1State extends State<Socialpage1> {
                           onOpenChat: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const Socialpage4(),
-                              settings: RouteSettings(arguments: c),
+                              builder: (_) => ChatRoomPage.group(c),
                             ),
                           ),
                         ),
@@ -252,7 +251,7 @@ class _Socialpage1State extends State<Socialpage1> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const Socialpage3(),
+                      builder: (context) => const BuddyMessagesPage(),
                     ),
                   );
                 },
@@ -269,8 +268,7 @@ class _Socialpage1State extends State<Socialpage1> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Socialpage5(),
-                      settings: const RouteSettings(arguments: 'RAKA ARKADIAN'),
+                      builder: (context) => ChatRoomPage.personal('RAKA ARKADIAN'),
                     ),
                   );
                 },
@@ -285,8 +283,7 @@ class _Socialpage1State extends State<Socialpage1> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Socialpage5(),
-                      settings: const RouteSettings(arguments: 'OLIVER MARTINEZ'),
+                      builder: (context) => ChatRoomPage.personal('OLIVER MARTINEZ'),
                     ),
                   );
                 },
@@ -299,12 +296,10 @@ class _Socialpage1State extends State<Socialpage1> {
                 imageUrl:
                     'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100',
                 onCardTap: () {
-                  // PERBAIKAN: Mengisi kode yang terputus dan mengarahkannya ke rute Socialpage5 secara aman
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Socialpage5(),
-                      settings: const RouteSettings(arguments: 'DANENDRA J.'),
+                      builder: (context) => ChatRoomPage.personal('DANENDRA J.'),
                     ),
                   );
                 },

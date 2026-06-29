@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'socialpage5.dart'; // Navigasi ke personal chatroom
+import 'chat_room_page.dart'; // Navigasi ke personal chatroom
 
-class Socialpage3 extends StatefulWidget {
-  const Socialpage3({Key? key}) : super(key: key);
+class BuddyMessagesPage extends StatefulWidget {
+  const BuddyMessagesPage({super.key});
 
   @override
-  State<Socialpage3> createState() => _Socialpage3State();
+  State<BuddyMessagesPage> createState() => _BuddyMessagesPageState();
 }
 
-class _Socialpage3State extends State<Socialpage3> {
+class _BuddyMessagesPageState extends State<BuddyMessagesPage> {
   // Warna latar belakang khas sesuai gambar Figma
   static const Color figmaBg = Color(0xFFE2E1D6); 
 
@@ -159,8 +159,7 @@ class _Socialpage3State extends State<Socialpage3> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Socialpage5(),
-        settings: RouteSettings(arguments: name),
+        builder: (context) => ChatRoomPage.personal(name),
       ),
     );
   }

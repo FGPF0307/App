@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fitarena/Pages/HomePages/homepage.dart';
-import 'package:fitarena/Pages/MapPages/MainMapPage.dart';
-import 'package:fitarena/Pages/SessionPages/SessionPage1.dart';
-import 'package:fitarena/Pages/SocialPages/socialpage1.dart';
-import 'package:fitarena/Pages/ProfilePages/profilePage.dart';
+import 'package:fitarena/Pages/MapPages/main_map_page.dart';
+import 'package:fitarena/Pages/SessionPages/session_page.dart';
+import 'package:fitarena/Pages/SocialPages/social_hub_page.dart';
+import 'package:fitarena/Pages/ProfilePages/profile_page.dart';
+import 'package:fitarena/services/profile_service.dart';
 
 /// Kerangka utama aplikasi: menampung 5 halaman + bottom navigation bar
 /// custom dengan lingkaran hitam yang "menggeser" ke tab yang aktif.
@@ -18,12 +19,19 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   late int _currentIndex = widget.initialIndex;
 
+  @override
+  void initState() {
+    super.initState();
+    // Muat profil (XP/level/stats) sekali saat aplikasi masuk ke beranda.
+    ProfileStore.instance.refresh();
+  }
+
   // Halaman tiap tab — URUTAN HARUS SAMA dengan _items di bawah.
   final List<Widget> _pages = const [
     FitnessDashboardPage(), // Home
     MainMapScreen(), // Map
     SessionPage(), // Session
-    Socialpage1(), // Social
+    SocialHubPage(), // Social
     ProfilePage(), // Profile
   ];
 
@@ -101,13 +109,29 @@ class _FloatingNavBar extends StatelessWidget {
           return Stack(
             clipBehavior: Clip.none,
             children: [
-              // 1) Bar berwarna (memanjang sampai area aman bawah)
+              // 1) Bar berwarna (memanjang sampai area aman bawah) dengan
+              //    sudut atas membulat + bayangan halus agar terlihat "float".
               Positioned(
                 top: _poke,
                 left: 0,
                 right: 0,
                 bottom: 0,
-                child: Container(color: barColor),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: barColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24),
+                      topRight: Radius.circular(24),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0x1A000000),
+                        blurRadius: 16,
+                        offset: Offset(0, -4),
+                      ),
+                    ],
+                  ),
+                ),
               ),
 
               // 2) Baris item: ikon hitam (saat tidak aktif) + label (saat aktif)
@@ -144,9 +168,18 @@ class _FloatingNavBar extends StatelessWidget {
                 height: _circleSize,
                 child: Container(
                   alignment: Alignment.center,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: circleColor,
                     shape: BoxShape.circle,
+                    // Ring krem tipis memisahkan lingkaran dari bar di belakangnya.
+                    border: Border.all(color: barColor, width: 4),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x33000000),
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: AnimatedSwitcher(
                     duration: duration,

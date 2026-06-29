@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fitarena/Pages/SessionPages/ExploreAll.dart';
-import 'package:fitarena/Pages/SessionPages/HostSession.dart';
-import 'package:fitarena/Pages/SessionPages/JoinSessionPage.dart';
+import 'package:fitarena/Pages/SessionPages/explore_all.dart';
+import 'package:fitarena/Pages/SessionPages/host_session.dart';
+import 'package:fitarena/Pages/SessionPages/join_session_page.dart';
 import 'package:fitarena/Pages/SessionPages/session_models.dart';
 
 class SessionPage extends StatefulWidget {

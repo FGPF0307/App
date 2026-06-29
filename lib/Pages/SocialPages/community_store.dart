@@ -46,7 +46,7 @@ class CommunityData {
 
 /// Store komunitas yang didukung REST API. Daftar diambil dari backend
 /// (`GET /api/communities`); menambah komunitas mengirim `POST`. Tetap
-/// `ChangeNotifier` agar UI (socialpage1/2) reaktif.
+/// `ChangeNotifier` agar UI (SocialHubPage & CommunitiesPage) reaktif.
 class CommunityStore extends ChangeNotifier {
   CommunityStore._();
   static final CommunityStore instance = CommunityStore._();
