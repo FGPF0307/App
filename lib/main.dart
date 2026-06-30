@@ -34,6 +34,7 @@ class FitArenaApp extends StatelessWidget {
         useMaterial3: true,
         scaffoldBackgroundColor: const Color(0xFFE1DCD3),
       ),
+      // Alur lengkap: Splash → Landing → Login → Home.
       home: const SplashScreen(),
     );
   }

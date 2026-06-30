@@ -9,6 +9,7 @@ class BuddyMessagesPage extends StatefulWidget {
 }
 
 class _BuddyMessagesPageState extends State<BuddyMessagesPage> {
+  // Warna latar belakang khas sesuai gambar Figma
   static const Color figmaBg = Color(0xFFE2E1D6); 
 
   @override

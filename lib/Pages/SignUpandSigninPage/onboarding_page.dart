@@ -105,6 +105,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
+  // ── LANGKAH 1: NAMA ──
   Widget _buildNameStep() {
     return Column(
       children: [
@@ -156,6 +157,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
+  // ── LANGKAH 2: PREFERENSI ──
   Widget _buildPrefStep() {
     return Column(
       children: [
@@ -224,6 +226,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
+  // ── KOMPONEN BERSAMA ──
   Widget _hardShadowBox({
     required Widget child,
     required Color color,

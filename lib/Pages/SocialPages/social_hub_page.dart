@@ -16,6 +16,7 @@ class SocialHubPage extends StatefulWidget {
 }
 
 class _SocialHubPageState extends State<SocialHubPage> {
+  // Variabel warna tema
   static const Color creamBg = Color(0xFFE1DCD3);
   static const Color darkGreen = Color(0xFF043927);
 
