@@ -67,6 +67,38 @@ fitarenaapp/
 | [rynsstuff](https://github.com/rynsstuff) | Rayyan Irfanshah | 2802503021 |
 | [RaphaelKaloh](https://github.com/RaphaelKaloh) | Raphael Timothy Marice | 2802510954 |
 
-<div align="center">
+## CARA MENJALANKAN FITARENA  
+PENTING: Jalankan Backend (API) terlebih dahulu, baru aplikasi Flutter.  
 
-</div>
+1. DOWNLOAD SOURCE CODE  
+Buka terminal/CMD.  
+Ketik: git clone [https://github.com/FGPF0307/App.git](https://github.com/FGPF0307/App.git)  
+Masuk ke folder: cd App/fitarenaapp  
+
+2. JALANKAN BACKEND (Node.js)  
+Masuk folder backend: cd backend  
+  
+Install dependensi: npm install  
+  
+Buat file .env (copy dari .env.example).(jika saat cek di folder backend->.env nya kosong isi dengan yang di bawah ini)  
+Buka .env dan isi dengan:  
+SUPABASE_URL=https://lloibeyejbqfqklnimtn.supabase.co  
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxsb2liZXllamJxZnFrbG5pbXRuIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDI5NjQyNywiZXhwIjoyMDk1ODcyNDI3fQ.hjeszdFxyxEc3Hm9IDDmGxbnbIPEs9db3-o_XNGlCUM  
+PORT=3000  
+  
+  
+Jalankan server: npm run dev  
+  
+3. JALANKAN FLUTTER  
+(Buka Terminal/CMD BARU)  
+Pastikan berada di folder utama: cd App/fitarenaapp  
+Download dependensi: flutter pub get  
+Jalankan aplikasi: flutter run -d chrome  
+  
+4. AKUN DEMO (Level 99 & Full Badge)  
+Email : demo@fitarena.com  
+Pass  : demo12345  
+  
+<div align="center">  
+  
+</div>  
