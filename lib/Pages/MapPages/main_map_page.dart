@@ -155,14 +155,17 @@ class _MainMapScreenState extends State<MainMapScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'HELLO,\n${currentUserName()}',
-                        style: const TextStyle(fontFamily: 'BebasNeue', fontSize: 36, height: 0.9, color: darkCharcoal),
+                      Expanded(
+                        child: Text(
+                          'HELLO,\n${currentUserName()}',
+                          style: const TextStyle(fontFamily: 'BebasNeue', fontSize: 36, height: 0.9, color: darkCharcoal),
+                        ),
                       ),
+                      const SizedBox(width: 12),
                       const CircleAvatar(
                         radius: 36,
-                        backgroundImage: AssetImage('assets/images/profile_dummy.jpg'), // Path foto lo
                         backgroundColor: Colors.grey,
+                        child: Icon(Icons.person, color: Colors.white, size: 36),
                       ),
                     ],
                   ),

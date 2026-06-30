@@ -228,11 +228,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
                 Container(
                   width: double.infinity,
-                  height: 220,
+                  height: 230,
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black, width: 2),
                     image: const DecorationImage(
-                      image: AssetImage('assets/images/running_track.jpg'),
+                      image: AssetImage('assets/images/NextSessionsRunning.jpg'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -248,13 +248,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                 fontSize: 32,
                                 color: Colors.white,
                                 letterSpacing: 2.0)),
-                        Text(_data.title.toUpperCase(),
-                            style: const TextStyle(
-                                fontFamily: 'BebasNeue',
-                                fontSize: 48,
-                                color: Colors.white,
-                                height: 0.9,
-                                letterSpacing: 2.0)),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(_data.title.toUpperCase(),
+                              style: const TextStyle(
+                                  fontFamily: 'BebasNeue',
+                                  fontSize: 48,
+                                  color: Colors.white,
+                                  height: 0.9,
+                                  letterSpacing: 2.0)),
+                        ),
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -311,23 +314,16 @@ class _ProfilePageState extends State<ProfilePage> {
                 _buildIndexRow('MINUTES TRAINING', _fmt(_data.minutesTraining)),
                 _buildIndexRow(
                     'CURRENT STREAK',
-                    '${_data.currentStreak.toString().padLeft(2, '0')} DAYS',
+                    '${_data.effectiveStreak.toString().padLeft(2, '0')} DAYS',
                     valueColor: const Color(0xFF4A6B38)),
                 const SizedBox(height: 30),
 
                 _buildSectionHeader('EARNED BADGE'),
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                  padding: const EdgeInsets.all(16),
                   color: Colors.black,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildEmptyBadge(),
-                      _buildEmptyBadge(),
-                      _buildEmptyBadge(),
-                    ],
-                  ),
+                  child: _buildEarnedBadges(),
                 ),
                 const SizedBox(height: 40),
 
@@ -480,14 +476,58 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildEmptyBadge() {
-    return Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.white, width: 2),
-      ),
+  // Badge yang sudah terbuka (kriteria sama dengan Badge Gallery).
+  List<(IconData, String)> _earnedBadges() {
+    final out = <(IconData, String)>[];
+    if (_data.dynamicDuo >= 60) out.add((Icons.people, 'DYNAMIC DUO'));
+    if (_data.earlyBird >= 20) out.add((Icons.wb_sunny, 'EARLY BIRD'));
+    if (_data.trendsetter >= 20) out.add((Icons.trending_up, 'TRENDSETTER'));
+    if (_data.activeFollowers >= 20) out.add((Icons.add, 'ACTIVE FOLLOWERS'));
+    if (_data.effectiveStreak >= 14) out.add((Icons.bolt, 'IRON STREAK'));
+    if (_data.locationsCount >= 20) out.add((Icons.map, 'COMMUNITY HOPPER'));
+    return out;
+  }
+
+  Widget _buildEarnedBadges() {
+    final earned = _earnedBadges();
+    if (earned.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 18),
+        child: Center(
+          child: Text('NO BADGES EARNED YET',
+              style: TextStyle(
+                  fontFamily: 'JetBrainsMono', color: Colors.white54, fontSize: 12)),
+        ),
+      );
+    }
+    return Wrap(
+      spacing: 14,
+      runSpacing: 16,
+      alignment: WrapAlignment.center,
+      children: [
+        for (final b in earned)
+          SizedBox(
+            width: 74,
+            child: Column(
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  color: Colors.white,
+                  child: Icon(b.$1, color: Colors.black, size: 30),
+                ),
+                const SizedBox(height: 6),
+                Text(b.$2,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontFamily: 'JetBrainsMono',
+                        color: Colors.white,
+                        fontSize: 8,
+                        fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+      ],
     );
   }
 

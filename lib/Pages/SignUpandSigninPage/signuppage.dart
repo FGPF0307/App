@@ -122,7 +122,6 @@ class _SignInPageState extends State<SignInPage> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // Logo
                             Center(
                               child: Container(
                                 padding: const EdgeInsets.all(12),
@@ -214,7 +213,6 @@ class _SignInPageState extends State<SignInPage> {
                             _buildSocialButtonsRow(),
                             const SizedBox(height: 24),
 
-                            // Footer → ke Sign Up
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [

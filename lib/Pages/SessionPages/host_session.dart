@@ -284,6 +284,7 @@ class _HostDetailsPageState extends State<HostDetailsPage> {
       endTime: endTime,
       image: widget.photoUrl,
       isNetwork: true,
+      host: ProfileStore.instance.data.fullName,
       spotsFilled: 1,
       spotsTotal: _maxParticipants,
       rewardPoints: 200,

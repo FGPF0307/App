@@ -66,7 +66,6 @@ class _ExploreAllTabState extends State<ExploreAllTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Gambar Sesi
           Container(
             height: 200,
             width: double.infinity,
@@ -82,7 +81,6 @@ class _ExploreAllTabState extends State<ExploreAllTab> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Judul & Nomor
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -106,7 +104,6 @@ class _ExploreAllTabState extends State<ExploreAllTab> {
                   ],
                 ),
                 const SizedBox(height: 4),
-                // Lokasi & Waktu
                 Text(
                   '${session.location}   ${session.startTime} ${session.day}',
                   style: const TextStyle(
@@ -117,7 +114,6 @@ class _ExploreAllTabState extends State<ExploreAllTab> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                // Spot tersisa & Tombol Join
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,

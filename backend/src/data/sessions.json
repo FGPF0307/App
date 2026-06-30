@@ -59,5 +59,21 @@
     "xp": 300,
     "number": "",
     "createdAt": "2026-06-29T14:20:18.885Z"
+  },
+  {
+    "id": "ses_mr035b6t7r5j",
+    "title": "RUNNING",
+    "location": "Binus Alam Sutera",
+    "day": "02/07",
+    "startTime": "15.00",
+    "endTime": "17.00",
+    "image": "https://wsrv.nl/?url=https%3A%2F%2Fi.pinimg.com%2F736x%2Fa8%2F04%2F14%2Fa8041494b86cfccd60758c15149cfe8d.jpg&w=800&q=80&output=jpg",
+    "host": "John Greenjim",
+    "spotsFilled": 2,
+    "spotsTotal": 10,
+    "rewardPoints": 200,
+    "xp": 300,
+    "number": "",
+    "createdAt": "2026-06-30T03:26:59.813Z"
   }
 ]

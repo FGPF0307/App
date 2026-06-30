@@ -78,10 +78,15 @@ class FitnessDashboardPage extends StatelessWidget {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.black, width: 2),
                     ),
-                    child: const CircleAvatar(
+                    child: CircleAvatar(
                       radius: 28,
                       backgroundColor: Colors.grey,
-                      backgroundImage: NetworkImage('https://via.placeholder.com/150'), // Ganti dengan asset fotomu
+                      backgroundImage: ProfileStore.instance.data.avatarUrl.isNotEmpty
+                          ? NetworkImage(ProfileStore.instance.data.avatarUrl)
+                          : null,
+                      child: ProfileStore.instance.data.avatarUrl.isEmpty
+                          ? const Icon(Icons.person, color: Colors.white, size: 30)
+                          : null,
                     ),
                   ),
                 ],
@@ -101,17 +106,20 @@ class FitnessDashboardPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              'Level ${p.level} : ${p.title}',
-                              style: const TextStyle(
-                                fontFamily: 'JetBrainsMono',
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                                color: Color(0xFF1A3F39),
+                            Expanded(
+                              child: Text(
+                                'Level ${p.level} : ${p.title}',
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontFamily: 'JetBrainsMono',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                  color: Color(0xFF1A3F39),
+                                ),
                               ),
                             ),
+                            const SizedBox(width: 8),
                             Text(
                               '${_fmtNum(p.currentXp)} / ${_fmtNum(p.xpToNext)}',
                               style: const TextStyle(

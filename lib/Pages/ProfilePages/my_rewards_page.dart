@@ -82,7 +82,6 @@ class _MyRewardsPageState extends State<MyRewardsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ── HEADER ──
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -119,7 +118,6 @@ class _MyRewardsPageState extends State<MyRewardsPage> {
               ),
               const SizedBox(height: 24),
 
-              // ── POINTS WALLET ──
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -163,7 +161,6 @@ class _MyRewardsPageState extends State<MyRewardsPage> {
               ),
               const SizedBox(height: 32),
 
-              // ── DAFTAR REWARD DARI API ──
               FutureBuilder<List<RewardItem>>(
                 future: _future,
                 builder: (context, snapshot) {

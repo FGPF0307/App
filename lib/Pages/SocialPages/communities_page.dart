@@ -231,7 +231,6 @@ class _CommunitiesPageState extends State<CommunitiesPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Header
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -259,7 +258,6 @@ class _CommunitiesPageState extends State<CommunitiesPage> {
                   ),
                   const SizedBox(height: 24),
 
-                  // YOUR JOINED SQUADS (dari CommunityStore)
                   const Text(
                     'YOUR JOINED SQUADS',
                     style: TextStyle(
@@ -309,7 +307,6 @@ class _CommunitiesPageState extends State<CommunitiesPage> {
                   const Divider(color: Colors.black26, thickness: 1),
                   const SizedBox(height: 14),
 
-                  // DISCOVER NEW SQUADS (lokal)
                   const Text(
                     'DISCOVER NEW SQUADS',
                     style: TextStyle(
